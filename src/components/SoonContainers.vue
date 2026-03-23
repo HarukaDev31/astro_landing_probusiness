@@ -1,7 +1,24 @@
+<script setup>
+import { ref } from 'vue';
+
+const dates = ref(['16 Abril', '30 Abril']);
+
+/** `public/images/check_naranja.png` se sirve en la raíz del sitio */
+const checkFlagSrc = `${import.meta.env.BASE_URL}images/check_naranja.png`;
+</script>
+
 <template>
-  <div class="soon-container">
-  <!--bandera forma con un icono de check-->
-    
+  <div class="soon-container" style="position: relative;">
+    <!-- bandera / check (public/images/check_naranja.png) -->
+    <img
+      :src="checkFlagSrc"
+      alt=""
+      class="soon-flag"
+      width="50"
+      height="50"
+      role="presentation"
+      style="position: absolute; top: -5px; right: 10px;"
+    />
     <div class="soon-item-container">
       <div class="soon-item" v-for="(item, index) in dates" :key="index">
         <div class="soon-icon">
@@ -96,7 +113,3 @@
   margin-top: 20px;
 }
 </style>
-<script setup>
-import { ref } from "vue";
-const dates = ref(["16 Abril", "30 Abril"]);
-</script>

@@ -8,7 +8,9 @@
     </div>
     <div class="navbar-actions">
       <a href="#form" class="navbar-cta">Cotizar Ahora</a>
-      
+      <button type="button" class="navbar-menu show-mobile-only flex" aria-label="Abrir menú">
+        <span class="navbar-menu-icon" aria-hidden="true"></span>
+      </button>
     </div>
   </div>
 </nav>
@@ -28,51 +30,6 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-  }
-
-  .navbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .navbar-menu {
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    border: none;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    cursor: pointer;
-  }
-
-  .navbar-menu-icon,
-  .navbar-menu-icon::before,
-  .navbar-menu-icon::after {
-    display: block;
-    width: 20px;
-    height: 2px;
-    background: #fff;
-    border-radius: 1px;
-    position: relative;
-  }
-
-  .navbar-menu-icon::before,
-  .navbar-menu-icon::after {
-    content: '';
-    position: absolute;
-    left: 0;
-  }
-
-  .navbar-menu-icon::before {
-    top: -6px;
-  }
-
-  .navbar-menu-icon::after {
-    top: 6px;
   }
 
   .navbar-logo {

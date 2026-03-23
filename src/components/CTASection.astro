@@ -12,7 +12,7 @@ const waHref = 'https://wa.me/51999999999';
 
     <h2 id="cta-heading" class="cta-heading">
       <span class="cta-heading-line cta-heading-line--muted">¿Listo/a para</span>
-      <span class="cta-heading-line cta-heading-line--accent">¿importar?</span>
+      <span class="cta-heading-line cta-heading-line--accent">importar?</span>
     </h2>
 
     <div class="cta-stage">
@@ -64,51 +64,49 @@ const waHref = 'https://wa.me/51999999999';
         />
       </div>
 
-      <span class="cta-float cta-float--truck" aria-hidden="true">
+      <div class="cta-main-cluster">
+        <div class="cta-hero">
+          <div class="cta-hero-ring">
+            <img
+              src="/images/chaleco.png"
+              alt="Asesora Pro Business con chaleco y casco"
+              class="cta-hero-img"
+              width="400"
+              height="400"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
         <img
-          src="/images/cta-truck.png"
-          alt=""
-          class="cta-float-png cta-float-png--truck"
-          width="88"
-          height="72"
+          src="/images/ct_msg1.png"
+          alt="Escríbenos ahora y te cotizamos sin compromiso"
+          class="cta-msg-img"
+          width="320"
+          height="200"
           loading="lazy"
           decoding="async"
         />
-      </span>
-
-      <div class="cta-hero" style="position: relative;">
-        <div class="cta-hero-ring">
-          <img
-            src="/images/chaleco.png"
-            alt="Asesora Pro Business con chaleco y casco"
-            class="cta-hero-img"
-            width="400"
-            height="400"
-            loading="lazy"
-            decoding="async"
-          />
-          
-        </div>
-        <img
-            src="/images/ct_msg1.png"
-            alt="Asesora Pro Business con chaleco y casco"
-            style="position: absolute; top: 70px; right: -250px;"
-            class="cta-hero-img"
-            width="400"
-            height="400"
-            loading="lazy"
-            decoding="async"
-          />
       </div>
-
-      <!-- Globo: solapa el círculo por la derecha; pico hacia la persona (izquierda del globo) -->
-   
     </div>
 
     <div class="cta-actions">
-      <a href={waHref} target="_blank" rel="noopener noreferrer" class="cta-btn-pill">
-        Escríbenos al WhatsApp
-      </a>
+      <div class="cta-btn-wrap">
+        <span class="cta-float cta-float--truck" aria-hidden="true">
+          <img
+            src="/images/cta-truck.png"
+            alt=""
+            class="cta-float-png cta-float-png--truck"
+            width="88"
+            height="72"
+            loading="lazy"
+            decoding="async"
+          />
+        </span>
+        <a href={waHref} target="_blank" rel="noopener noreferrer" class="cta-btn-pill">
+          Escríbenos al WhatsApp
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -118,18 +116,19 @@ const waHref = 'https://wa.me/51999999999';
     --cta-green: #4ade80;
     --cta-green-ring: rgba(74, 222, 128, 0.38);
     --cta-wave-step: 76px; /* ancho entre anillos → pocas ondas visibles */
-    --cta-wave-center-x: 56%;
-    --cta-wave-center-y: 40%;
+    --cta-wave-center-x: 50%;
+    --cta-wave-center-y: 42%;
     background: #fff;
-    padding: clamp(56px, 8vw, 100px) clamp(20px, 4vw, 40px) clamp(64px, 10vw, 120px);
-    overflow: hidden;
+    padding: clamp(56px, 8vw, 100px) clamp(20px, 4vw, 40px) clamp(96px, 14vw, 140px);
+    /* Sin overflow:hidden: no recorta el botón ni el globo PNG */
+    overflow-x: clip;
   }
 
   .cta-visual {
     position: relative;
-    max-width: 920px;
+    max-width: 960px;
     margin: 0 auto;
-    min-height: min(72vw, 560px);
+    min-height: min(68vw, 520px);
     background: #fff;
     isolation: isolate;
   }
@@ -195,24 +194,52 @@ const waHref = 'https://wa.me/51999999999';
 
   .cta-heading-line--accent {
     color: var(--cta-green);
-    text-transform: lowercase;
   }
 
   .cta-stage {
     position: relative;
     z-index: 2;
-    width: min(100%, 520px);
+    width: min(100%, 580px);
     aspect-ratio: 1;
-    margin: 0 auto clamp(72px, 12vw, 112px);
+    margin: 0 auto clamp(56px, 10vw, 96px);
     display: grid;
     place-items: center;
     overflow: visible;
   }
 
+  /* Círculo + imagen del mensaje alineados en fila (diseño Figma) */
+  .cta-main-cluster {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    padding-inline: clamp(4px, 2vw, 16px);
+    gap: 0;
+  }
+
   .cta-hero {
     position: relative;
-    width: min(62%, 280px);
+    flex: 0 0 auto;
+    width: min(52%, 260px);
+    max-width: 280px;
     z-index: 3;
+  }
+
+  .cta-msg-img {
+    flex: 0 1 auto;
+    display: block;
+    width: min(46%, 260px);
+    max-width: min(46vw, 280px);
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+    margin-left: clamp(-36px, -5vw, -12px);
+    z-index: 4;
+    filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.12));
   }
 
   .cta-hero-ring {
@@ -279,74 +306,6 @@ const waHref = 'https://wa.me/51999999999';
     filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.18));
   }
 
-  .cta-callout {
-    position: absolute;
-    /* Centrado en altura con el círculo; hacia la derecha para solapar la mitad derecha del avatar */
-    left: clamp(38%, 42vw, 46%);
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 5;
-    width: min(248px, 52%);
-    max-width: 260px;
-    padding: 20px 22px 22px;
-    border-radius: 18px;
-    background: #262626;
-    background: linear-gradient(180deg, #2e2e2e 0%, #262626 45%, #1f1f1f 100%);
-    color: #fff;
-    box-shadow:
-      0 20px 48px rgba(0, 0, 0, 0.18),
-      0 8px 16px rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  }
-
-  /* Pico en el borde izquierdo, apuntando hacia el centro (la persona) */
-  .cta-callout::before {
-    content: '';
-    position: absolute;
-    left: -11px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 10px 12px 10px 0;
-    border-color: transparent #2e2e2e transparent transparent;
-    filter: drop-shadow(-2px 0 1px rgba(0, 0, 0, 0.06));
-  }
-
-  .cta-callout-line {
-    margin: 0;
-    font-family: 'Epilogue', var(--font-body), system-ui, sans-serif;
-    font-size: clamp(0.9375rem, 2.1vw, 1.0625rem);
-    font-weight: 400;
-    line-height: 1.45;
-    text-align: left;
-    letter-spacing: 0.01em;
-  }
-
-  .cta-callout-line + .cta-callout-line {
-    margin-top: 6px;
-  }
-
-  .cta-callout-line strong {
-    font-weight: 700;
-  }
-
-  .cta-callout-line--with-icon {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .cta-callout-icon {
-    display: block;
-    width: 22px;
-    height: 22px;
-    object-fit: contain;
-    flex-shrink: 0;
-  }
-
   .cta-float--chat {
     top: 2%;
     left: -4%;
@@ -367,18 +326,40 @@ const waHref = 'https://wa.me/51999999999';
     top: 34%;
   }
 
-  .cta-float--truck {
-    bottom: -6%;
-    right: 6%;
-    z-index: 4;
-  }
-
+  /* Fila CTA centrada; el camión se ancla arriba-derecha del botón (.cta-btn-wrap = relative) */
   .cta-actions {
-    position: relative;
-    z-index: 3;
+    z-index: 5;
     display: flex;
     justify-content: center;
-    margin-top: clamp(8px, 2vw, 20px);
+    align-items: center;
+    margin-top: clamp(48px, 9vw, 88px);
+    padding-bottom: clamp(8px, 2vw, 16px);
+  }
+
+  .cta-btn-wrap {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  .cta-btn-wrap .cta-float--truck {
+    position: absolute;
+    left: auto;
+    right: clamp(-6px, -0.5vw, 4px);
+    top: auto;
+    bottom: 100%;
+    z-index: 6;
+    line-height: 0;
+    transform: translateY(clamp(-10px, -1.2vw, -4px)) rotate(14deg);
+  }
+
+  .cta-btn-wrap .cta-float-png--truck {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(28vw, 104px);
+    transform: none;
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.18));
   }
 
   .cta-btn-pill {
@@ -413,11 +394,28 @@ const waHref = 'https://wa.me/51999999999';
 
   @media (max-width: 640px) {
     .cta-stage {
-      width: min(100%, 400px);
-      margin-bottom: clamp(24px, 8vw, 40px);
+      width: min(100%, 440px);
+      margin-bottom: clamp(20px, 6vw, 36px);
       aspect-ratio: auto;
-      min-height: min(88vw, 380px);
-      padding-bottom: clamp(120px, 36vw, 160px);
+      min-height: 0;
+      padding-bottom: clamp(8px, 3vw, 20px);
+    }
+
+    .cta-main-cluster {
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(8px, 2vw, 16px);
+      padding-inline: 0;
+    }
+
+    .cta-hero {
+      width: min(72%, 260px);
+    }
+
+    .cta-msg-img {
+      width: min(92%, 300px);
+      max-width: 100%;
+      margin-left: 0;
     }
 
     .cta-float--chat {
@@ -435,29 +433,6 @@ const waHref = 'https://wa.me/51999999999';
 
     .cta-float--pallets {
       right: -8%;
-    }
-
-    .cta-float--truck {
-      right: 2%;
-      bottom: 8%;
-    }
-
-    /* Debajo del círculo, centrado; pico arriba hacia el avatar */
-    .cta-callout {
-      left: 50%;
-      top: auto;
-      bottom: clamp(4px, 2vw, 12px);
-      transform: translateX(-50%);
-      width: min(300px, 94%);
-      max-width: none;
-    }
-
-    .cta-callout::before {
-      left: 50%;
-      top: -12px;
-      transform: translateX(-50%);
-      border-width: 0 10px 14px 10px;
-      border-color: transparent transparent #2e2e2e transparent;
     }
   }
 </style>

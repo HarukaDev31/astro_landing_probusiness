@@ -1,154 +1,138 @@
 ---
-const gallery = [
-  { label: 'Cotización del cliente', img: '/images/probbd.png' },
-  { label: 'Llenado de contenedor y envío a Perú', img: '/images/camion.jpg' },
-  { label: 'Inspección de la carga en China', img: '/images/aduanaa.jpg' },
-  { label: 'Entrega al importador en Perú', img: '/images/logisticweb.png' },
-  { label: 'Trámites aduaneros', img: '/images/aduanaa.jpg' },
-  { label: 'Clientes satisfechos', img: '/images/chaleco.png' },
+/**
+ * Figma: frame 4017-154 (cabecera) + 4017-159 (carrusel / pasos).
+ * Carrusel en Vue (`TrustCarousel.vue`): animaciones con **anime.js** (createTimeline), sin JS suelto en esta sección.
+ */
+import TrustCarousel from './TrustCarousel.vue';
+
+const FIGMA = 'https://www.figma.com/api/mcp/asset';
+
+const slides = [
+  {
+    step: 1,
+    labelBefore: 'Cotización del ',
+    labelBold: 'cliente',
+    labelAfter: '',
+    figma: `${FIGMA}/dd55081e-fd8e-4854-bccc-6411ca2ed49b`,
+    fallback: '/images/probbd.png',
+  },
+  {
+    step: 2,
+    labelBefore: 'Inspección de la ',
+    labelBold: 'carga en China',
+    labelAfter: '',
+    figma: `${FIGMA}/7b51e738-9159-433e-9fe4-618adb5eee66`,
+    fallback: '/images/chaleco.png',
+  },
+  {
+    step: 3,
+    labelBefore: 'Llenado de contenedor y ',
+    labelBold: 'envío a Perú',
+    labelAfter: '',
+    figma: `${FIGMA}/aa32d3b7-d8e1-46cf-9999-1335b0dd5b42`,
+    fallback: '/images/camion.jpg',
+  },
+  {
+    step: 4,
+    labelBefore: 'Arribo a ',
+    labelBold: 'puerto',
+    labelAfter: '',
+    figma: `${FIGMA}/3fcf347e-94f5-413b-97ec-eae8ed5d61a0`,
+    fallback: '/images/logisticweb.png',
+  },
+  {
+    step: 5,
+    labelBefore: '',
+    labelBold: '',
+    labelAfter: '',
+    plain: 'Desaduanaje',
+    figma: `${FIGMA}/a3eb46ab-5ccc-42e6-8fb6-ce3a58ff4634`,
+    fallback: '/images/aduanaa.jpg',
+  },
+  {
+    step: 6,
+    labelBefore: 'Entrega de ',
+    labelBold: 'mercancía',
+    labelAfter: '',
+    boldIsStrong: true,
+    figma: `${FIGMA}/a6a104b9-f8cc-4d4b-a403-10b352e9403e`,
+    fallback: '/images/listoimportar.png',
+  },
 ];
 ---
 
-<section class="trust-section">
-  <div class="container">
-    <div class="trust-header">
-      <p class="trust-label trust-label--desktop">Confía en nosotros</p>
-      <p class="trust-label trust-label--mobile">CONOCE SOBRE NOSOTROS</p>
-      <h2 class="trust-title">
-        Mas de <span class="trust-title-accent">10 años</span> consolidando<br />carga desde China
+<section class="trust-section" aria-labelledby="trust-heading">
+  <div class="container trust-inner">
+    <header class="trust-header">
+      <p class="trust-eyebrow">Confia en nosotros</p>
+      <h2 id="trust-heading" class="trust-title">
+        <span class="trust-title-line"
+          >Mas de <span class="trust-title-accent">10 años</span> consolidando</span
+        >
+        <span class="trust-title-line">carga desde China</span>
       </h2>
-    </div>
+    </header>
 
-    <div class="gallery-grid">
-      {gallery.map((item) => (
-        <div class="gallery-card">
-          <img src={item.img} alt={item.label} class="gallery-img" />
-          <div class="gallery-overlay">
-            <span class="gallery-label">{item.label}</span>
-          </div>
-        </div>
-      ))}
-    </div>
+    <TrustCarousel client:visible slides={slides} />
   </div>
 </section>
 
 <style>
   .trust-section {
     background: #000;
-    padding: 80px 0 100px;
+    width: 100%;
+    padding: clamp(72px, 9vw, 112px) 0 clamp(88px, 11vw, 120px);
+  }
+
+  .trust-inner {
+    width: 80%;
+    max-width: var(--container-width, 1152px);
+    margin-inline: auto;
+    padding-inline: clamp(16px, 4vw, 24px);
   }
 
   .trust-header {
-    margin-bottom: 60px;
+    text-align: left;
+    margin-bottom: clamp(36px, 5vw, 52px);
+    max-width: 44rem;
   }
 
-  .trust-label {
-    font-family: 'Sora', sans-serif;
-    font-size: 18px;
+  .trust-eyebrow {
+    font-family: 'Sora', var(--font-heading), system-ui, sans-serif;
+    font-size: clamp(14px, 1.8vw, 20px);
     font-weight: 400;
-    color: #FF723B;
-    margin-bottom: 16px;
-  }
-
-  .trust-label--mobile {
-    display: none;
-    font-size: 13px;
-    letter-spacing: 0.1em;
-    color: #FF530F;
-  }
-
-  .trust-title-accent {
-    color: #FF530F;
-    font-weight: 600;
+    line-height: 1.26;
+    color: #ff733b;
+    text-transform: uppercase;
+    margin: 0 0 clamp(16px, 2.2vw, 24px);
+    letter-spacing: 0.04em;
   }
 
   .trust-title {
-    font-family: 'Epilogue', sans-serif;
-    font-size: 64px;
+    font-family: 'Epilogue', var(--font-heading), system-ui, sans-serif;
+    font-size: clamp(2.25rem, 5.5vw, 4rem);
     font-weight: 300;
     color: #fff;
-    letter-spacing: -3.84px;
-    line-height: 0.95;
-    max-width: 700px;
+    letter-spacing: -0.06em;
+    line-height: 0.92;
+    margin: 0;
   }
 
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-
-  .gallery-card {
-    position: relative;
-    border-radius: var(--radius-card-large);
-    overflow: hidden;
-    height: 400px;
-    background: #D9D9D9;
-    cursor: pointer;
-  }
-
-  .gallery-card:hover .gallery-img {
-    transform: scale(1.04);
-  }
-
-  .gallery-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
+  .trust-title-line {
     display: block;
   }
 
-  .gallery-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 55%);
-    display: flex;
-    align-items: flex-end;
-    padding: 28px 28px;
+  .trust-title-line:first-child {
+    margin-bottom: 0.06em;
   }
 
-  .gallery-label {
-    font-family: 'Sora', sans-serif;
-    font-size: 28px;
-    font-weight: 400;
-    color: #fff;
-    line-height: 1.2;
-    max-width: 320px;
-  }
-
-  @media (max-width: 900px) {
-    .trust-title {
-      font-size: 42px;
-    }
-
-    .gallery-card {
-      height: 280px;
-    }
-
-    .gallery-label {
-      font-size: 20px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .trust-label--desktop {
-      display: none;
-    }
-
-    .trust-label--mobile {
-      display: block;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .gallery-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .trust-title {
-      font-size: 32px;
-      letter-spacing: -2px;
-    }
+  .trust-title-accent {
+    font-weight: 500;
+    background: linear-gradient(90deg, #ff5410 0%, #ff733b 75.48%, #ff5410 100%);
+    background-size: 120% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
   }
 </style>

@@ -14,8 +14,10 @@ import Footer from '../components/Footer.astro';
 ---
 
 <Layout>
-  <AnnouncementBar />
-  <Navbar />
+  <header class="site-header">
+    <AnnouncementBar />
+    <Navbar />
+  </header>
   <Hero />
   <HeroMessaging />
   <PointSection />
@@ -26,3 +28,10 @@ import Footer from '../components/Footer.astro';
   <TrustSection />
   <Footer />
 </Layout>
+
+<style>
+  .site-header {
+    position: relative;
+    z-index: 110;
+  }
+</style>
