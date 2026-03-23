@@ -1,0 +1,366 @@
+---
+import SoonContainers from "./SoonContainers.vue";
+---
+
+<section class="hero">
+  <!-- Solo fondo fotográfico + collage 3D (texto en HeroMessaging) -->
+  <div class="hero-desktop">
+    <div class="hero-bg">
+      <img src="/images/hero-bg-web.png" alt="" class="hero-bg-img" role="presentation" />
+      <div class="hero-overlay"></div>
+    </div>
+
+    <div class="hero-desktop-shell">
+      <div class="hero-stage-wrap">
+        <div class="hero-stage">
+          <div class="hero-stage-chevrons" aria-hidden="true">
+            <span class="hero-chevron"></span>
+            <span class="hero-chevron"></span>
+            <span class="hero-chevron"></span>
+          </div>
+          <img
+            src="/images/salidas.png"
+            alt="Próximas salidas de contenedor"
+            class="hero-salidas"
+          />
+          <img
+            src="/images/probbd.png"
+            alt=""
+            class="hero-probbd"
+            role="presentation"
+          />
+          <img src="/images/calendarr.png" alt="" class="hero-calendarr" role="presentation" />
+          <div class="hero-dates">
+            <SoonContainers client:load />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-mobile">
+    <div class="hero-mobile-visual">
+      <div class="hero-mobile-visual-bg"></div>
+      <div class="hero-mobile-collage">
+        <img src="/images/probbd.png" alt="" class="hero-mobile-probbd" role="presentation" />
+        <img src="/images/narnajonn.png" alt="" class="hero-mobile-box" role="presentation" />
+        <img src="/images/salidas.png" alt="" class="hero-mobile-salidas" />
+        <img src="/images/calendarr.png" alt="" class="hero-mobile-cal" role="presentation" />
+        <div class="hero-mobile-dates">
+          <SoonContainers client:load />
+        </div>
+        <div class="hero-mobile-chevrons" aria-hidden="true">
+          <span class="hero-chevron hero-chevron--mobile"></span>
+          <span class="hero-chevron hero-chevron--mobile"></span>
+          <span class="hero-chevron hero-chevron--mobile"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    background: #000;
+  }
+
+  /*
+    Diseño base: 620px de artboard con container 1152px (≈53.8%).
+    Por debajo de ~1152 el ancho sigue el slot útil; por encima crece ~0.175px por px de viewport
+    para que en monitores anchos el collage no quede “pequeño” y se mantenga el orden relativo.
+  */
+  .hero-desktop {
+    position: relative;
+    min-height: min(78vh, 820px);
+    overflow: visible;
+    padding-bottom: 40px;
+    --hero-inline-pad: max(24px, calc((100vw - var(--container-width, 1152px)) / 2));
+    --hero-slot: min(100vw - 2 * var(--hero-inline-pad), var(--container-width, 1152px));
+    --hero-stage-w: clamp(
+      300px,
+      calc(var(--hero-slot) * 0.538 + max(0px, (100vw - var(--container-width, 1152px))) * 0.175),
+      860px
+    );
+    --hero-stage-min-h: clamp(360px, calc(var(--hero-stage-w) * 0.71), 560px);
+    --hero-stage-scale: calc(var(--hero-stage-w) / 620px);
+    /* Baja todo el collage un poco (escala con el artboard) */
+    --hero-collage-offset-y: calc(36px * var(--hero-stage-scale));
+  }
+
+  .hero-desktop-shell {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    margin: 0 auto;
+    padding: 108px var(--hero-inline-pad) 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    min-height: min(90vh, 740px);
+    box-sizing: border-box;
+  }
+
+  .hero-stage-wrap {
+    position: relative;
+    width: var(--hero-stage-w);
+    min-width: 0;
+    min-height: var(--hero-stage-min-h);
+  }
+
+  @media (max-width: 1100px) {
+    .hero-desktop-shell {
+      min-height: 520px;
+      padding-top: 96px;
+    }
+
+    .hero-desktop {
+      --hero-stage-min-h: clamp(340px, calc(var(--hero-stage-w) * 0.65), 460px);
+    }
+  }
+
+  .hero-stage-chevrons {
+    position: absolute;
+    left: 2%;
+    bottom: 8%;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    opacity: 0.5;
+    transform: scale(calc(1.15 * var(--hero-stage-scale)));
+    transform-origin: left bottom;
+  }
+
+  .hero-chevron {
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 11px solid rgba(255, 255, 255, 0.42);
+    margin-bottom: -5px;
+  }
+
+  .hero-chevron:last-child {
+    margin-bottom: 0;
+  }
+
+  .hero-chevron--mobile {
+    border-bottom-color: rgba(160, 160, 160, 0.75);
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 0;
+  }
+
+  .hero-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 28%;
+  }
+
+  /*
+    Degradado gris → negro sólido (#000) para empatar sin costura con HeroMessaging.
+  */
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      rgba(100, 100, 100, 0.38) 0%,
+      rgba(72, 72, 72, 0.52) 18%,
+      rgba(38, 38, 38, 0.72) 42%,
+      rgba(14, 14, 14, 0.92) 72%,
+      #000000 100%
+    );
+  }
+
+  .hero-stage {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--hero-collage-offset-y);
+    bottom: 0;
+    z-index: 2;
+  }
+
+  .hero-probbd {
+    position: absolute;
+    left: 18%;
+    bottom: calc(-20px * var(--hero-stage-scale));
+    width: 72%;
+    max-width: none;
+    z-index: 2;
+    filter: drop-shadow(0 24px 60px rgba(0, 0, 0, 0.6));
+  }
+
+  /* Panel salidas: % del artboard para mantener orden en cualquier escala */
+  .hero-salidas {
+    position: absolute;
+    left: -22%;
+    bottom: calc(-50px * var(--hero-stage-scale));
+    width: 56%;
+    max-width: none;
+    z-index: 2;
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+  }
+
+  .hero-calendarr {
+    position: absolute;
+    top: 12%;
+    right: 2%;
+    width: 22%;
+    max-width: none;
+    object-fit: contain;
+    z-index: 6;
+  }
+
+  .hero-dates {
+    position: absolute;
+    right: -14%;
+    top: 50%;
+    transform: translateY(-50%) scale(calc(0.78 * var(--hero-stage-scale)));
+    transform-origin: right center;
+    z-index: 5;
+  }
+
+  @media (max-width: 1100px) {
+    .hero-dates {
+      transform: translateY(-50%) scale(calc(0.65 * var(--hero-stage-scale)));
+    }
+  }
+
+  /* ── Móvil: solo collage sobre fondo ── */
+  .hero-mobile {
+    display: none;
+    width: 100%;
+    padding: 72px 0 0;
+    box-sizing: border-box;
+  }
+
+  .hero-mobile-visual {
+    position: relative;
+    height: clamp(320px, 78vw, 380px);
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    overflow: visible;
+  }
+
+  .hero-mobile-chevrons {
+    position: absolute;
+    left: 8%;
+    bottom: 12%;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    opacity: 0.85;
+  }
+
+  .hero-mobile-chevrons .hero-chevron--mobile {
+    margin-bottom: -5px;
+  }
+
+  .hero-mobile-visual-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(
+        to bottom,
+        rgba(100, 100, 100, 0.36) 0%,
+        rgba(55, 55, 55, 0.58) 28%,
+        rgba(22, 22, 22, 0.88) 68%,
+        #000000 100%
+      ),
+      url('/images/hero-bg-web.png');
+    background-position: center top;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 0 0 18px 18px;
+  }
+
+  .hero-mobile-collage {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 32px;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  .hero-mobile-probbd {
+    position: absolute;
+    left: 18%;
+    right: -2%;
+    bottom: 2%;
+    width: 78%;
+    max-width: 320px;
+    margin: 0 auto;
+    z-index: 1;
+    object-fit: contain;
+    filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.5));
+  }
+
+  .hero-mobile-box {
+    position: absolute;
+    left: 2%;
+    top: 20%;
+    width: 40%;
+    z-index: 2;
+    object-fit: contain;
+    opacity: 0.98;
+  }
+
+  .hero-mobile-salidas {
+    position: absolute;
+    left: -12%;
+    bottom: 6%;
+    width: 62%;
+    max-width: 248px;
+    z-index: 3;
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.45));
+  }
+
+  .hero-mobile-cal {
+    position: absolute;
+    right: 18%;
+    top: 8%;
+    width: 26%;
+    z-index: 5;
+    object-fit: contain;
+  }
+
+  .hero-mobile-dates {
+    position: absolute;
+    right: -6%;
+    top: 34%;
+    transform: scale(0.52);
+    transform-origin: right center;
+    z-index: 6;
+  }
+
+  @media (max-width: 1024px) {
+    .hero-desktop {
+      min-height: 640px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-desktop {
+      display: none;
+    }
+
+    .hero-mobile {
+      display: block;
+    }
+  }
+</style>

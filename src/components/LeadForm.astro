@@ -1,0 +1,271 @@
+---
+---
+
+<section class="lead-form" id="form" aria-labelledby="lead-form-title">
+  <div class="lead-form-inner container">
+    <p class="lead-form-eyebrow">ASEGURA TU ESPACIO</p>
+    <h2 id="lead-form-title" class="lead-form-title">Únete al próximo consolidado</h2>
+    <p class="lead-form-sub">
+      Déjanos tus datos y un asesor te contactará para calcular tu importación
+    </p>
+
+    <form class="lead-form-form" action="#" method="post" novalidate>
+      <div class="lead-form-row">
+        <div class="lead-field-box">
+          <label for="lead-nombre" class="lead-field-box-label">Nombre Completo</label>
+          <input
+            id="lead-nombre"
+            type="text"
+            name="nombre"
+            class="lead-field-box-input"
+            placeholder="e.g José Gutiérrez"
+            autocomplete="name"
+            required
+          />
+        </div>
+        <div class="lead-field-box">
+          <label for="lead-whatsapp" class="lead-field-box-label">Número de WhatsApp</label>
+          <input
+            id="lead-whatsapp"
+            type="tel"
+            name="whatsapp"
+            class="lead-field-box-input"
+            placeholder="999 999 999"
+            autocomplete="tel"
+            inputmode="tel"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="lead-field-block">
+        <label class="lead-select-question" for="lead-proveedor">¿Ya tienes tu proveedor en China?</label>
+        <div class="lead-field-box lead-field-box--select">
+          <div class="lead-select-wrap">
+            <select id="lead-proveedor" class="lead-select" name="proveedor" required>
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option value="si">Sí, ya tengo proveedor</option>
+              <option value="no">No, aún no tengo proveedor</option>
+              <option value="buscando">Estoy buscando proveedor</option>
+            </select>
+            <svg
+              class="lead-select-chevron"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="lead-submit">Quiero importar con Pro Business</button>
+    </form>
+  </div>
+</section>
+
+<style>
+  .lead-form {
+    background: #000;
+    padding: clamp(72px, 10vw, 120px) 0;
+  }
+
+  .lead-form-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .lead-form-eyebrow {
+    font-family: 'Sora', var(--font-heading), system-ui, sans-serif;
+    font-size: clamp(12px, 1.8vw, 14px);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #ff530f;
+    text-align: center;
+    margin: 0 0 20px;
+  }
+
+  .lead-form-title {
+    font-family: 'Sora', var(--font-heading), system-ui, sans-serif;
+    font-size: clamp(2rem, 5.5vw, 3.25rem);
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    margin: 0 0 20px;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+  }
+
+  .lead-form-sub {
+    font-family: 'Epilogue', var(--font-body), system-ui, sans-serif;
+    font-size: clamp(1rem, 2.2vw, 1.25rem);
+    font-weight: 400;
+    color: #fff;
+    text-align: center;
+    margin: 0 auto 48px;
+    max-width: 36em;
+    line-height: 1.55;
+    opacity: 0.95;
+  }
+
+  .lead-form-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .lead-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* Caja gris oscura con etiqueta dentro arriba */
+  .lead-field-box {
+    background: #2a2a2a;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 14px 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.2s ease;
+  }
+
+  .lead-field-box:focus-within {
+    border-color: rgba(255, 83, 15, 0.55);
+  }
+
+  .lead-field-box-label {
+    font-family: 'Epilogue', var(--font-body), system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: #8a8a8a;
+    line-height: 1.2;
+  }
+
+  .lead-field-box-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: 'Epilogue', var(--font-body), system-ui, sans-serif;
+    font-size: clamp(17px, 2.2vw, 20px);
+    font-weight: 400;
+    color: #fff;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .lead-field-box-input::placeholder {
+    color: #9b9b9b;
+  }
+
+  .lead-field-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .lead-select-question {
+    font-family: 'Epilogue', var(--font-body), system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: #fff;
+    padding-left: 2px;
+    line-height: 1.35;
+  }
+
+  .lead-field-box--select {
+    padding: 12px 18px;
+  }
+
+  .lead-select-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .lead-select {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 6px 40px 6px 0;
+    font-family: 'Epilogue', var(--font-body), system-ui, sans-serif;
+    font-size: clamp(17px, 2.2vw, 20px);
+    font-weight: 400;
+    color: #9b9b9b;
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .lead-select:focus {
+    color: #fff;
+  }
+
+  .lead-select option {
+    background: #1a1a1a;
+    color: #fff;
+  }
+
+  .lead-select-chevron {
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    pointer-events: none;
+  }
+
+  .lead-submit {
+    width: 100%;
+    margin-top: 8px;
+    padding: 20px 24px;
+    background: #ff530f;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Epilogue', var(--font-body), system-ui, sans-serif;
+    font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+    box-shadow: 0 8px 28px rgba(255, 83, 15, 0.35);
+  }
+
+  .lead-submit:hover {
+    background: #e84403;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 36px rgba(255, 83, 15, 0.4);
+  }
+
+  .lead-submit:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 640px) {
+    .lead-form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .lead-form-inner {
+      padding-inline: 4px;
+    }
+  }
+</style>

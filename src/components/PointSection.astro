@@ -1,0 +1,518 @@
+<section class="point-section" aria-labelledby="point-heading">
+  <div class="point-wrap">
+    <header class="point-header">
+      <h2 id="point-heading" class="point-title">
+        ¿En qué <span class="point-title-accent">punto</span> <br> estás?
+      </h2>
+      <p class="point-desc">
+        Elige la opción que mejor <strong>describe tu situación</strong> ahora mismo
+      </p>
+    </header>
+
+    <div class="point-cards">
+      <article class="point-card point-card--align-start first-card">
+        <div class="point-card-copy">
+          <p class="point-card-quote">
+            <span class="point-quote-mark" aria-hidden="true">"</span>
+            No sé qué
+            <br />
+            producto importar
+            <span class="point-quote-mark" aria-hidden="true">"</span>
+          </p>
+          <p class="point-card-body">
+            Te explicamos brevemente cómo conseguir <strong
+              >productos novedosos</strong
+            >.
+          </p>
+          <div style="position: relative; bottom: 0;">
+            <a href="#" class="point-card-btn point-card-btn--free">
+              <span class="point-btn-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 5v14M5 12h14"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"></path>
+                </svg>
+              </span>
+              Ver recurso gratuito
+            </a>
+            <img
+              src="/images/arrows.png"
+              alt="Arrow right"
+              style="position: absolute; top: 30px; right: -80px;"
+            />
+          </div>
+        </div>
+        <div class="point-card-media">
+          <img
+            src="/images/openbox.png"
+            alt="Recursos para elegir producto a importar"
+            class="point-card-img"
+            loading="lazy"
+            width="560"
+            height="420"
+            decoding="async"
+          />
+          <div class="point-card-media-shade" aria-hidden="true"></div>
+        </div>
+      </article>
+
+      <article
+        class="point-card point-card--warm point-card--align-end"
+        style="background: url('/images/gradientecard2.png') no-repeat center center; background-size: cover;border: 1px solid rgba(255, 255, 255, 0.35);"
+      >
+        <div class="point-card-copy">
+          <p class="point-card-quote">
+            <span class="point-quote-mark" aria-hidden="true">"</span>
+            Aún no tengo mi proveedor
+            <span class="point-quote-mark" aria-hidden="true">"</span>
+          </p>
+          <p class="point-card-body">
+            Te explicamos cómo conseguir <strong>proveedores confiables</strong
+            >.
+          </p>
+          <div style="position: relative; bottom: 0;">
+            <a href="#" class="point-card-btn point-card-btn--free">
+              <span class="point-btn-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 5v14M5 12h14"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"></path>
+                </svg>
+              </span>
+              Ver recurso gratuito
+            </a>
+          </div>
+        </div>
+        <div class="point-card-media">
+          <img
+            src="/images/aunnoproveedor.png"
+            alt="Logística y proveedores"
+            class="point-card-img"
+            loading="lazy"
+            width="560"
+            height="420"
+            decoding="async"
+          />
+          <div class="point-card-media-shade" aria-hidden="true"></div>
+        </div>
+      </article>
+
+      <article class="point-card point-card--align-start" style="background: url('/images/listoimportar.png') no-repeat center center; background-size: cover;border: 1px solid rgba(255, 255, 255, 0.35);">
+        <div class="point-card-copy">
+          <p class="point-card-quote">
+            <span class="point-quote-mark" aria-hidden="true">"</span>
+            Listo para importar
+            <span class="point-quote-mark" aria-hidden="true">"</span>
+          </p>
+          <p class="point-card-body">
+            Ya tengo la <strong>cotización de mi proveedor</strong>.
+          </p>
+          <a href="#form" class="point-card-btn point-card-btn--register">
+            <span class="point-btn-ellipse" aria-hidden="true">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 18l6-6-6-6"
+                  stroke="var(--color-orange-primary)"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path>
+              </svg>
+            </span>
+            <span class="point-register-text">
+              Regístrate y te calculamos el costo total de importación.
+            </span>
+          </a>
+        </div>
+       
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .point-section {
+    background: var(--color-bg-primary);
+    padding: clamp(72px, 10vw, 120px) 0;
+    width: 100%;
+  }
+
+  /* Contenedor principal al 80% del ancho de la vista, centrado */
+  .point-wrap {
+    width: 80%;
+    max-width: var(--container-width);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 clamp(16px, 2vw, 24px);
+    box-sizing: border-box;
+  }
+
+  .point-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px 48px;
+    margin-bottom: clamp(48px, 6vw, 72px);
+  }
+
+  .point-title {
+    font-family: var(--font-heading);
+    font-size: clamp(40px, 5.2vw, 68px);
+    font-weight: 300;
+    color: #fff;
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+    max-width: min(420px, 100%);
+    margin: 0;
+
+  }
+
+  .point-title-accent {
+    background: linear-gradient(90deg, #ff5410 0%, #ff733b 72%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    
+  }
+
+  .point-desc {
+    font-family: var(--font-body);
+    font-size: clamp(17px, 1.65vw, 20px);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.88);
+    max-width: 380px;
+    text-align: right;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .point-desc strong {
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .point-cards {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 4vw, 40px);
+    width: 100%;
+    align-items: stretch;
+  }
+
+  /* Tarjeta no ocupa todo el ancho del contenedor 80% */
+  .point-card--align-start {
+    margin-right: auto;
+    margin-left: 0;
+    width: min(100%, 92%);
+  }
+
+  .point-card--align-end {
+    margin-left: auto;
+    margin-right: 0;
+    width: min(100%, 92%);
+  }
+
+  /* Impares: texto | imagen. Pares: imagen | texto (intercalado visual) */
+  .point-card {
+    display: grid;
+    align-items: stretch;
+    min-height: clamp(400px, 34vw, 380px);
+    border-radius: var(--radius-card-large);
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255, 83, 15, 0.06),
+      0 28px 56px rgba(0, 0, 0, 0.55),
+      0 0 80px -20px rgba(255, 83, 15, 0.15);
+
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 47%);
+    width: max(350px, 60%);
+  }
+
+  .point-card--align-start .point-card-copy {
+    grid-column: 1;
+  }
+
+  .point-card--align-start .point-card-media {
+    grid-column: 2;
+  }
+
+  .point-card--align-end {
+    grid-template-columns: minmax(300px, 47%) minmax(0, 1fr);
+  }
+
+  .point-card--align-end .point-card-media {
+    grid-column: 2;
+  }
+
+  .point-card--align-end .point-card-copy {
+    grid-column: 1;
+  }
+
+  
+
+  .point-card--warm .point-card-body {
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .point-card--warm .point-card-media-shade {
+    background: linear-gradient(
+      100deg,
+      rgba(255, 90, 40, 0.25) 0%,
+      transparent 55%
+    );
+  }
+
+  .point-card-copy {
+    padding: clamp(32px, 4.5vw, 52px) clamp(28px, 4vw, 48px)
+      clamp(32px, 4.5vw, 52px) clamp(32px, 4vw, 56px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: clamp(14px, 2vw, 22px);
+    min-width: 0;
+    width: 100%;
+  }
+
+  .point-card-media {
+    position: relative;
+    min-height: 260px;
+    overflow: hidden;
+  }
+
+  .point-card-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    min-height: 100%;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  .point-card-media-shade {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      95deg,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.12) 45%,
+      transparent 72%
+    );
+  }
+
+  .point-card--warm .point-card-media-shade {
+    background: linear-gradient(
+      100deg,
+      rgba(255, 60, 20, 0.2) 0%,
+      transparent 50%
+    );
+  }
+
+  .point-card-quote {
+    font-family: var(--font-heading);
+    font-size: clamp(26px, 2.8vw, 36px);
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+
+  .point-quote-mark {
+    font-weight: 300;
+    font-style: italic;
+    font-family: var(--font-heading);
+  }
+
+  .point-card-body strong {
+    color: #fff;
+    font-weight: 600;
+    font-family: var(--font-body);
+  }
+
+  .point-card-body {
+    font-family: var(--font-body);
+    font-size: clamp(16px, 1.5vw, 19px);
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.86);
+    line-height: 1.5;
+    margin: 0;
+    max-width: 26rem;
+  }
+
+  .point-card-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+    padding: 14px 22px 14px 18px;
+    width: 100%;
+    min-height: 48px;
+    border-radius: 20px;
+    font-family: var(--font-heading);
+    font-size: 20px;
+    line-height: 1.2;
+    text-align: center;
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      filter 0.2s ease;
+    align-self: flex-start;
+    background: var(--color-orange-primary);
+    box-shadow:
+      0 4px 20px rgba(255, 83, 15, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  .point-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .point-card-btn--register {
+    flex-wrap: nowrap;
+    align-items: center;
+    max-width: 90%;
+    padding: 12px 20px 12px 14px;
+    gap: 14px;
+    border-radius: 10px;
+    text-align: left;
+  }
+
+  .point-register-text {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.35;
+    max-width: 17rem;
+  }
+
+  .point-btn-ellipse {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background:white;
+    color:var(--color-orange-primary);
+    stroke:var(--color-orange-primary)!important;
+    stroke-width: 2px;
+    flex-shrink: 0;
+  }
+
+  .point-card-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.04);
+  }
+
+  .point-card-btn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 900px) {
+    .point-wrap {
+      width: min(92%, 100%);
+      padding: 0 16px;
+    }
+
+    .point-desc {
+      text-align: left;
+      max-width: none;
+    }
+
+    .point-header {
+      flex-direction: column;
+      align-items: flex-start;
+   
+    }
+
+    .point-card,
+    .point-card--align-end {
+      grid-template-columns: 1fr;
+      min-height: unset;
+      width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    .point-card-media {
+      grid-column: auto !important;
+      grid-row: 1;
+      min-height: 220px;
+      max-height: min(52vw, 320px);
+      aspect-ratio: 16 / 10;
+    }
+
+    .point-card-copy {
+      grid-column: auto !important;
+      grid-row: 2;
+      justify-content: flex-start;
+      padding-top: clamp(24px, 5vw, 36px);
+    }
+
+    .point-card-img {
+      min-height: 220px;
+      max-height: min(52vw, 320px);
+    }
+
+    .point-card-media-shade {
+      background: linear-gradient(
+        180deg,
+        transparent 35%,
+        rgba(0, 0, 0, 0.55) 100%
+      );
+    }
+  }
+
+  @media (max-width: 480px) {
+    .point-register-text {
+      font-size: 13px;
+      max-width: none;
+    }
+
+    .point-card-btn--register {
+      flex-wrap: wrap;
+    }
+  }
+
+  .first-card {
+    
+    border-radius: 20px;
+    background:
+     
+      radial-gradient(
+        303.55% 219.67% at 107.62% 128.64%,
+        #ff5410 0%,
+        rgba(255, 84, 16, 0.73) 28.88%,
+        rgba(255, 84, 16, 0.15) 43.48%,
+        rgba(255, 84, 16, 0.11) 57.19%,
+        rgba(255, 84, 16, 0) 100%
+      );
+    background-blend-mode: plus-darker, normal;
+    backdrop-filter: blur(2px);
+  }
+</style>

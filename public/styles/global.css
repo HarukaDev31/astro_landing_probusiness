@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Epilogue:wght@300;400;500;600;700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-bg-primary: #000000;
+  --color-bg-secondary: #1A1A1A;
+  --color-bg-card-dark: #2A2A2A;
+  --color-bg-card-light: #FFF7F4;
+  --color-bg-section-warm: #FFFBF8;
+  --color-orange-primary: #FF530F;
+  --color-orange-dark: #E84403;
+  --color-orange-light: #FF723B;
+  --color-step-title: #A75641;
+  --color-green-whatsapp: #25CF43;
+  --color-green-light: #61FD7D;
+  --color-text-primary: #FFFFFF;
+  --color-text-dark: #000000;
+  --color-text-muted: #5B5B5B;
+  --color-text-gray: #838383;
+  --color-text-placeholder: #9B9B9B;
+
+  --gradient-orange-cta: linear-gradient(to right, #FF530F, #E84403);
+  --gradient-orange-button: linear-gradient(to right, #FF530F, #FF723B, #FF530F);
+  --gradient-whatsapp: linear-gradient(to right, #25CF43, #61FD7D);
+  --gradient-hero-overlay: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.57) 37%, rgba(0,0,0,1) 100%);
+  --gradient-card-step6: linear-gradient(135deg, #FF7A41, #FF500B);
+
+  --font-heading: 'Epilogue', sans-serif;
+  --font-body: 'Epilogue', sans-serif;
+
+  --radius-button: 10px;
+  --radius-button-pill: 30px;
+  --radius-card: 18px;
+  --radius-card-large: 38px;
+  --radius-image: 24px;
+  --radius-input: 10px;
+
+  --container-width: 90vw;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: inherit;
+}

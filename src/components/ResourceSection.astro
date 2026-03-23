@@ -1,0 +1,171 @@
+---
+---
+
+<section class="resources">
+  <div class="resources-inner container">
+    <div class="resource-card">
+      <div class="resource-card-img-wrap">
+        <img src="/images/resource-1.jpg" alt="¿No sé qué producto importar?" class="resource-card-img" />
+        <div class="resource-glow"></div>
+      </div>
+      <div class="resource-card-content">
+        <h3 class="resource-card-title">¿No sé qué<br />producto importar?</h3>
+        <p class="resource-card-body">Te explicamos brevemente como conseguir productos novedosos.</p>
+        <a href="#" class="resource-card-btn">+ Ver recurso gratuito</a>
+      </div>
+    </div>
+
+    <div class="resource-divider">
+      <img src="/images/microfono.png" alt="Micrófono" class="resource-mic" />
+    </div>
+
+    <div class="resource-card">
+      <div class="resource-card-img-wrap">
+        <img src="/images/resource-1.jpg" alt="¿Aún no tengo mi proveedor?" class="resource-card-img" />
+        <div class="resource-glow"></div>
+      </div>
+      <div class="resource-card-content">
+        <h3 class="resource-card-title">¿Aún no tengo<br />mi proveedor?</h3>
+        <p class="resource-card-body">Te explicamos como conseguir proveedores confiables.</p>
+        <a href="#" class="resource-card-btn">+ Ver recurso gratuito</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .resources {
+    background: #000;
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .resources::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,83,15,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .resources-inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .resource-card {
+    position: relative;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background: #111;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .resource-card-img-wrap {
+    position: relative;
+    height: 280px;
+    overflow: hidden;
+  }
+
+  .resource-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-image) var(--radius-image) 0 0;
+  }
+
+  .resource-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255,83,15,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .resource-card-content {
+    padding: 28px 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .resource-card-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .resource-card-body {
+    font-family: 'Epilogue', sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.5;
+  }
+
+  .resource-card-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background: linear-gradient(to right, #FF530F, #FF723B, #FF530F);
+    border: 0.5px solid #FF6A29;
+    border-radius: 14px;
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #fff;
+    margin-top: auto;
+    transition: opacity 0.2s, transform 0.2s;
+    align-self: flex-start;
+  }
+
+  .resource-card-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .resource-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .resource-mic {
+    width: 200px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 40px rgba(255,83,15,0.2));
+  }
+
+  @media (max-width: 1024px) {
+    .resources-inner {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    .resource-divider {
+      display: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .resources-inner {
+      grid-template-columns: 1fr;
+    }
+
+    .resource-card-title {
+      font-size: 22px;
+    }
+  }
+</style>

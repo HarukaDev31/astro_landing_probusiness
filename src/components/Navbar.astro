@@ -1,0 +1,116 @@
+---
+---
+
+<nav class="navbar">
+  <div class="navbar-inner container">
+    <div class="navbar-logo">
+      <img src="/images/logo-hero.png" alt="Pro Business" class="navbar-logo-img" />
+    </div>
+    <div class="navbar-actions">
+      <a href="#form" class="navbar-cta">Cotizar Ahora</a>
+      
+    </div>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 20px 0;
+  }
+
+  .navbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .navbar-menu {
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .navbar-menu-icon,
+  .navbar-menu-icon::before,
+  .navbar-menu-icon::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: #fff;
+    border-radius: 1px;
+    position: relative;
+  }
+
+  .navbar-menu-icon::before,
+  .navbar-menu-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+  }
+
+  .navbar-menu-icon::before {
+    top: -6px;
+  }
+
+  .navbar-menu-icon::after {
+    top: 6px;
+  }
+
+  .navbar-logo {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-logo svg text {
+    font-family: 'Sora', sans-serif;
+  }
+
+  .navbar-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    background: linear-gradient(to right, #FF530F, #E84403);
+    border-radius: 10px;
+    font-family: 'Epilogue', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #fff;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+
+  .navbar-cta:hover {
+    opacity: 0.9;
+  }
+
+  @media (max-width: 768px) {
+    .navbar {
+      padding: 14px 0;
+    }
+
+    .navbar-cta {
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+  }
+</style>
