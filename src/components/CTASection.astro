@@ -1,22 +1,21 @@
 ---
 /** CTA — fondo blanco, ondas en CSS, iconos PNG (Figma) */
-const waHref = 'https://wa.me/51999999999';
+const waHref = "https://wa.me/51999999999";
 ---
 
 <section class="cta-section" aria-labelledby="cta-heading">
-  <div class="cta-visual">
+  <div class="cta-visual" style="position: relative; z-index: 2;">
     <!-- Pocas ondas concéntricas (solo código) -->
     <div class="cta-waves" aria-hidden="true">
       <div class="cta-waves-layer"></div>
     </div>
 
-    <h2 id="cta-heading" class="cta-heading">
-      <span class="cta-heading-line cta-heading-line--muted">¿Listo/a para</span>
+    <h2 id="cta-heading" class="cta-heading" style="position: relative; z-index: 2;">
+      <span class="cta-heading-line cta-heading-line--muted">¿Listo/a para</span
+      >
       <span class="cta-heading-line cta-heading-line--accent">importar?</span>
-    </h2>
-
-    <div class="cta-stage">
-      <span class="cta-float cta-float--chat" aria-hidden="true">
+      <span class="cta-float cta-float--chat" aria-hidden="true"
+      style="position: absolute; top: 0; left: 12%; z-index: 3;">
         <img
           src="/images/cta-icon-chat.png"
           alt=""
@@ -28,7 +27,8 @@ const waHref = 'https://wa.me/51999999999';
         />
       </span>
 
-      <span class="cta-float cta-float--pin" aria-hidden="true">
+      <span class="cta-float cta-float--pin" aria-hidden="true"
+      style="position: absolute; top: 0; right: 12%; z-index: 3;transform: rotate(10deg);">
         <img
           src="/images/cta-icon-pin.png"
           alt=""
@@ -39,8 +39,23 @@ const waHref = 'https://wa.me/51999999999';
           decoding="async"
         />
       </span>
+      <div class="cta-float cta-float--pallets" aria-hidden="true" style="position: absolute; top: 50%; right: -5%; z-index: 3;transform: rotate(10deg);">
+        <img
+          src="/images/cta-float-pallets.png"
+          alt=""
+          class="cta-float-png cta-float-png--circle"
+          width="140"
+          height="140"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </h2>
 
-      <div class="cta-float cta-float--plane" aria-hidden="true">
+    <div class="cta-stage" style="position: relative; z-index: 3;">
+      
+
+      <div class="cta-float cta-float--plane" aria-hidden="true" style="position: absolute; bottom: -10%; left: -10%; z-index: 3;transform: rotate(10deg);">
         <img
           src="/images/cta-float-plane.png"
           alt=""
@@ -52,27 +67,17 @@ const waHref = 'https://wa.me/51999999999';
         />
       </div>
 
-      <div class="cta-float cta-float--pallets" aria-hidden="true">
-        <img
-          src="/images/cta-float-pallets.png"
-          alt=""
-          class="cta-float-png cta-float-png--circle"
-          width="140"
-          height="140"
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
+      
 
-      <div class="cta-main-cluster">
+      <div class="cta-main-cluster" style="position: relative; z-index: 3;">
         <div class="cta-hero">
           <div class="cta-hero-ring">
             <img
               src="/images/chaleco.png"
               alt="Asesora Pro Business con chaleco y casco"
               class="cta-hero-img"
-              width="400"
-              height="400"
+              width="500"
+              height="500"
               loading="lazy"
               decoding="async"
             />
@@ -86,13 +91,14 @@ const waHref = 'https://wa.me/51999999999';
           height="200"
           loading="lazy"
           decoding="async"
+          style="position: absolute; top: 30%; right: -20%; z-index: 3;";
         />
       </div>
     </div>
 
-    <div class="cta-actions">
-      <div class="cta-btn-wrap">
-        <span class="cta-float cta-float--truck" aria-hidden="true">
+    <div class="cta-actions" style="position: relative; z-index: 3;">
+      <div class="cta-btn-wrap" style="position: relative; z-index: 3;">
+        <span class="cta-float cta-float--truck" aria-hidden="true" style="position: absolute; top: -50px; right: -20%; z-index: 3;transform: rotate(-5deg);">
           <img
             src="/images/cta-truck.png"
             alt=""
@@ -101,10 +107,29 @@ const waHref = 'https://wa.me/51999999999';
             height="72"
             loading="lazy"
             decoding="async"
+            ;
           />
         </span>
-        <a href={waHref} target="_blank" rel="noopener noreferrer" class="cta-btn-pill">
-          Escríbenos al WhatsApp
+        <a
+          href={waHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="cta-btn-pill"
+        >
+          <span>
+            Escríbenos al WhatsApp
+          </span>
+          <svg
+            width="34"
+            height="34"
+            viewBox="0 0 34 34"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17 0C7.62323 0 0 7.44095 0 16.5935C0 25.7461 7.62323 33.187 17 33.187C26.3768 33.187 34 25.7461 34 16.5935C34 7.44095 26.3768 0 17 0ZM21.8495 17.8336L16.4811 23.0737C16.1419 23.3983 15.6857 23.5802 15.2106 23.5802C14.7354 23.5802 14.2793 23.3983 13.94 23.0737C13.6047 22.7439 13.4165 22.2982 13.4165 21.8336C13.4165 21.369 13.6047 20.9232 13.94 20.5935L18.0558 16.5935L13.94 12.5936C13.7732 12.4307 13.6408 12.2374 13.5505 12.0246C13.4602 11.8118 13.4138 11.5837 13.4138 11.3534C13.4138 11.1231 13.4603 10.895 13.5506 10.6823C13.6409 10.4695 13.7732 10.2761 13.9401 10.1133C14.1069 9.95045 14.305 9.82127 14.523 9.73314C14.741 9.64501 14.9747 9.59965 15.2106 9.59966C15.4466 9.59967 15.6802 9.64504 15.8982 9.73318C16.1162 9.82133 16.3143 9.95052 16.4811 10.1134L21.8495 15.3534C22.1848 15.6832 22.373 16.1289 22.373 16.5935C22.373 17.0581 22.1848 17.5039 21.8495 17.8336Z"
+              fill="black"></path>
+          </svg>
         </a>
       </div>
     </div>
@@ -119,7 +144,8 @@ const waHref = 'https://wa.me/51999999999';
     --cta-wave-center-x: 50%;
     --cta-wave-center-y: 42%;
     background: #fff;
-    padding: clamp(56px, 8vw, 100px) clamp(20px, 4vw, 40px) clamp(96px, 14vw, 140px);
+    padding: clamp(56px, 8vw, 100px) clamp(20px, 4vw, 40px)
+      clamp(96px, 14vw, 140px);
     /* Sin overflow:hidden: no recorta el botón ni el globo PNG */
     overflow-x: clip;
   }
@@ -169,15 +195,14 @@ const waHref = 'https://wa.me/51999999999';
   }
 
   .cta-heading {
-    position: relative;
-    z-index: 2;
+   
     margin: 0 0 clamp(28px, 5vw, 40px);
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.12em;
-    font-family: 'Sora', var(--font-heading), system-ui, sans-serif;
+    font-family: "Sora", var(--font-heading), system-ui, sans-serif;
     font-size: clamp(2.25rem, 5vw, 3.5rem);
     font-weight: 400;
     letter-spacing: -0.04em;
@@ -193,18 +218,24 @@ const waHref = 'https://wa.me/51999999999';
   }
 
   .cta-heading-line--accent {
-    color: var(--cta-green);
+    background: var(--Linear, linear-gradient(0deg, #25CF43 0%, #61FD7D 100%));
+background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+font-family: Epilogue;
+font-size: 64px;
+font-style: normal;
+font-weight: 400;
+line-height: 90%;
+letter-spacing: -3.84px;
   }
 
   .cta-stage {
     position: relative;
     z-index: 2;
     width: min(100%, 580px);
-    aspect-ratio: 1;
-    margin: 0 auto clamp(56px, 10vw, 96px);
-    display: grid;
-    place-items: center;
-    overflow: visible;
+    margin: 0 auto ;
+   
   }
 
   /* Círculo + imagen del mensaje alineados en fila (diseño Figma) */
@@ -224,8 +255,8 @@ const waHref = 'https://wa.me/51999999999';
   .cta-hero {
     position: relative;
     flex: 0 0 auto;
-    width: min(52%, 260px);
-    max-width: 280px;
+    width: min(52%, 320px);
+    max-width: 320px;
     z-index: 3;
   }
 
@@ -297,12 +328,13 @@ const waHref = 'https://wa.me/51999999999';
   .cta-float-png--circle {
     max-width: min(30vw, 142px);
     border-radius: 50%;
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.95)) drop-shadow(0 12px 24px rgba(0, 0, 0, 0.14));
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.95))
+      drop-shadow(0 12px 24px rgba(0, 0, 0, 0.14));
   }
 
   .cta-float-png--truck {
     max-width: min(26vw, 96px);
-    transform: rotate(14deg);
+    transform: rotate(-4deg);
     filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.18));
   }
 
@@ -363,22 +395,27 @@ const waHref = 'https://wa.me/51999999999';
   }
 
   .cta-btn-pill {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 18px clamp(32px, 6vw, 56px);
-    border-radius: 999px;
-    background: var(--cta-green);
+    border-radius: 17px;
+    background: var(--Linear, linear-gradient(0deg, #25cf43 0%, #61fd7d 100%));
+    box-shadow: 0 17px 22.9px -7px rgba(0, 0, 0, 0.25);
+
+    
     color: #000;
-    font-family: 'Epilogue', var(--font-body), system-ui, sans-serif;
+    font-family: "Epilogue", var(--font-body), system-ui, sans-serif;
     font-size: clamp(1rem, 2.4vw, 1.25rem);
-    font-weight: 600;
+    font-weight: 400;
     text-decoration: none;
-    box-shadow: 0 12px 40px rgba(74, 222, 128, 0.35);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 320px;
+    padding: 15px 20px;
     transition:
       transform 0.2s ease,
       box-shadow 0.2s ease,
       background 0.2s ease;
+  
   }
 
   .cta-btn-pill:hover {
