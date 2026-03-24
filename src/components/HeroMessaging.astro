@@ -11,12 +11,12 @@
       <div class="hm-copy">
         <div class="hm-head">
           <h1 class="hm-title">
-            <span class="hm-title-line">Importa desde</span>
+            <span class="hm-title-line">Importa desde </span>
             <span class="hm-title-line hm-title-line--mid"><strong>China sin</strong></span>
             <span class="hm-title-line hm-title-line--cta-row">
               <span class="hm-title-accent">complicaciones</span>
               <a href="#form" class="hm-pill-arrow" aria-label="Cotizar mi importación">
-                <svg class="hm-pill-arrow-icon" width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <svg class="hm-pill-arrow-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <path
                     d="M0.290807 22.705L10.2906 32.7048C10.6498 33.1243 11.2811 33.1732 11.7005 32.8139C12.12 32.4547 12.1689 31.8234 11.8096 31.4039C11.7761 31.3648 11.7396 31.3283 11.7005 31.2949L3.41071 22.995L43.0001 22.995C43.5523 22.995 44 22.5473 44 21.995C44 21.4427 43.5523 20.995 43.0001 20.995L3.41071 20.995L11.7005 12.7052C12.12 12.346 12.1689 11.7147 11.8096 11.2953C11.4503 10.8758 10.8191 10.8269 10.3996 11.1862C10.3605 11.2197 10.324 11.2562 10.2906 11.2953L0.290719 21.2951C-0.0969381 21.685 -0.0969381 22.3149 0.290807 22.705Z"
                     fill="black"
@@ -28,7 +28,7 @@
         </div>
 
         <p class="hm-lead">
-          <span class="hm-lead-strong">Acompañamiento 360</span> desde el pago al proveedor hasta la entrega en tus manos en Perú.
+          <span class="hm-lead-regular">Acompañamiento 360</span> desde el pago al proveedor hasta la entrega en tus manos en Perú.
         </p>
       </div>
 
@@ -131,9 +131,9 @@
     justify-content: center;
     flex-shrink: 0;
     width: auto;
-    min-width: 90px;
-    height: 48px;
-    padding: 0 18px;
+    min-width: 72px;
+    height: 40px;
+    padding: 0 12px;
     background: linear-gradient(to right, #ff5410, #ff6a2e);
     border-radius: 999px;
     text-decoration: none;
@@ -149,8 +149,8 @@
   .hm-pill-arrow-icon {
     display: block;
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
+    width: 26px;
+    height: 26px;
   }
 
   .hm-lead {
@@ -259,22 +259,23 @@
 
   @media (max-width: 768px) {
     .hero-msg {
+      width: 90%;
       padding: 28px 0 52px;
     }
 
     .hm-title {
-      font-size: clamp(32px, 9.2vw, 40px);
+      font-size: clamp(28px, 8.2vw, 34px);
     }
 
     .hm-pill-arrow {
-      min-width: 64px;
-      height: 44px;
-      padding: 0 14px;
+      min-width: 40px;
+      height: 26px;
+      padding: 0 10px;
     }
 
     .hm-pill-arrow-icon {
-      width: 32px;
-      height: 32px;
+      width: 17px;
+      height: 17px;
     }
 
     .hm-media-badge {
@@ -296,5 +297,7 @@
     .hm-title-line--cta-row {
       gap: 8px 12px;
     }
+  }.hm-lead-regular {
+    font-weight: 300;
   }
 </style>

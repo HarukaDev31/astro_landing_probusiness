@@ -34,7 +34,7 @@ const testimonials = [
 ---
 
 <section class="testimonials" aria-labelledby="testimonials-heading">
-  <div class="t-container" style="position: relative;width:100%;">
+  <div class="t-container">
     <header class="testimonials-head">
       <p class="t-eyebrow">LO QUE DICEN <br /> NUESTROS CLIENTES</p>
       <h2 id="testimonials-heading" class="testimonials-title">
@@ -42,8 +42,69 @@ const testimonials = [
         <span class="testimonials-title-accent">éxito</span>
       </h2>
     </header>
-    <img src="/images/t_right_side.png" alt="Testimonials Deco"  style="position: absolute; left: 0; top: 0;" />
-    <img src="/images/t_glass.png" alt="Testimonials Deco"  style="position: absolute; right: 0; top: 0;" />
+    <img
+      src="/images/t_right_side.png"
+      alt=""
+      class="t-deco-img t-deco-img--left"
+      aria-hidden="true"
+    />
+    <img
+      src="/images/t_glass.png"
+      alt=""
+      class="t-deco-img t-deco-img--right"
+      aria-hidden="true"
+    />
+    <svg
+      class="t-deco-svg-mobile"
+      xmlns="http://www.w3.org/2000/svg"
+      width="196"
+      height="529"
+      viewBox="0 0 196 529"
+      fill="none"
+      aria-hidden="true"
+    >
+      <g filter="url(#filter0_f_2022_3323)">
+        <path
+          d="M277.306 498.195C153.203 517.736 24.5587 246.424 29.3505 177.15C34.1424 107.876 149.895 112.608 190.153 39.729C218.551 -11.6799 268.632 -93.8674 274.728 -146.985L274.65 -166.642C275.572 -160.709 275.546 -154.108 274.728 -146.985L277.306 498.195Z"
+          fill="url(#paint0_radial_2022_3323)"></path>
+      </g>
+      <defs>
+        <filter
+          id="filter0_f_2022_3323"
+          x="-7.43866e-05"
+          y="-195.863"
+          width="306.527"
+          height="724.282"
+          filterUnits="userSpaceOnUse"
+          color-interpolation-filters="sRGB"
+        >
+          <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="BackgroundImageFix"
+            result="shape"></feBlend>
+          <feGaussianBlur
+            stdDeviation="14.6104"
+            result="effect1_foregroundBlur_2022_3323"></feGaussianBlur>
+        </filter>
+        <radialGradient
+          id="paint0_radial_2022_3323"
+          cx="0"
+          cy="0"
+          r="1"
+          gradientTransform="matrix(-279.25 -104.869 107.933 -750.597 276.873 226.036)"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0.112961" stop-color="white" stop-opacity="0.93"></stop>
+          <stop offset="0.250637" stop-color="#FF5410" stop-opacity="0.08"></stop>
+          <stop offset="0.369792" stop-color="#FF5410" stop-opacity="0.47"></stop>
+          <stop offset="0.493846" stop-color="#FF5410" stop-opacity="0.5"></stop>
+          <stop offset="0.71875" stop-color="#FF5410"></stop>
+          <stop offset="0.885417" stop-color="white"></stop>
+        </radialGradient>
+      </defs>
+    </svg>
     <div class="t-carousel-wrap">
       <div
         class="t-carousel"
@@ -53,12 +114,13 @@ const testimonials = [
         aria-label="Videos casos de éxito"
       >
         {
-          videoCases.map((v) => (
+          videoCases.map((v, i) => (
             <a
               href="#"
               class="t-slide"
               aria-label={`Ver caso: ${v.title}`}
               data-t-slide
+              data-t-slide-index={i}
             >
               <div class="t-slide-frame">
                 <img
@@ -116,25 +178,47 @@ const testimonials = [
     const dotsWrap = document.getElementById("t-carousel-dots");
     if (!track || !dotsWrap) return;
 
-    const slides = () => Array.from(track.querySelectorAll("[data-t-slide]"));
-    const dots = () => Array.from(dotsWrap.querySelectorAll("[data-t-dot]"));
+    const slides = () =>
+      Array.from(track.querySelectorAll("[data-t-slide]"));
+    const dots = () =>
+      Array.from(dotsWrap.querySelectorAll("[data-t-dot]"));
 
+    /**
+     * Índice del slide con más ancho visible dentro del carrusel (encaja con peek + snap).
+     * Usa getBoundingClientRect, no offsetLeft/scrollLeft.
+     */
     function activeIndex() {
+      if (!(track instanceof HTMLElement)) return 0;
+      const trackRect = track.getBoundingClientRect();
+      const trackMid = (trackRect.left + trackRect.right) / 2;
       const list = slides();
-      if (!list.length) return 0;
-      const sl = track.scrollLeft;
       let best = 0;
-      let bestDist = Infinity;
-      list.forEach((el, i) => {
-        const left = el instanceof HTMLElement ? el.offsetLeft : 0;
-        const d = Math.abs(left - sl);
-        if (d < bestDist) {
-          bestDist = d;
+      let bestOverlap = -1;
+      let bestCenterDist = Infinity;
+      for (let i = 0; i < list.length; i++) {
+        const el = list[i];
+        if (!(el instanceof HTMLElement)) continue;
+        const er = el.getBoundingClientRect();
+        const left = Math.max(er.left, trackRect.left);
+        const right = Math.min(er.right, trackRect.right);
+        const overlap = Math.max(0, right - left);
+        const elMid = (er.left + er.right) / 2;
+        const centerDist = Math.abs(elMid - trackMid);
+        if (
+          overlap > bestOverlap ||
+          (overlap === bestOverlap && centerDist < bestCenterDist)
+        ) {
+          bestOverlap = overlap;
+          bestCenterDist = centerDist;
           best = i;
         }
-      });
+      }
       return best;
     }
+
+    /** Mientras no llegue el scroll al slide elegido (clic/tecla), no pisar el punto con activeIndex(). */
+    let pendingDotIndex = null;
+    let pendingDotClearTimer = 0;
 
     function setDots(i) {
       dots().forEach((btn, j) => {
@@ -144,31 +228,62 @@ const testimonials = [
       });
     }
 
-    function goTo(i) {
+    function scrollToSlide(i) {
       const list = slides();
       const el = list[i];
       if (!el) return;
-      el.scrollIntoView({
+      if (!(el instanceof HTMLElement)) return;
+      track.scrollTo({
+        left: el.offsetLeft,
         behavior: "smooth",
-        inline: "start",
-        block: "nearest",
       });
+    }
+
+    function goTo(i) {
+      const list = slides();
+      if (i < 0 || i >= list.length) return;
+      window.clearTimeout(pendingDotClearTimer);
+      pendingDotIndex = i;
       setDots(i);
+      scrollToSlide(i);
+      pendingDotClearTimer = window.setTimeout(() => {
+        pendingDotIndex = null;
+        syncDotsFromLayout();
+      }, 700);
     }
 
     let ticking = false;
+    let scrollSettleTimer = 0;
+
+    function syncDotsFromLayout() {
+      if (pendingDotIndex !== null) {
+        setDots(pendingDotIndex);
+        if (activeIndex() === pendingDotIndex) {
+          pendingDotIndex = null;
+        }
+        return;
+      }
+      setDots(activeIndex());
+    }
+
     track.addEventListener(
       "scroll",
       () => {
         if (ticking) return;
         ticking = true;
         requestAnimationFrame(() => {
-          setDots(activeIndex());
+          syncDotsFromLayout();
           ticking = false;
         });
+        window.clearTimeout(scrollSettleTimer);
+        scrollSettleTimer = window.setTimeout(syncDotsFromLayout, 160);
       },
       { passive: true },
     );
+
+    track.addEventListener("scrollend", syncDotsFromLayout);
+
+    window.addEventListener("resize", syncDotsFromLayout, { passive: true });
 
     dotsWrap.addEventListener("click", (e) => {
       const tgt = e.target;
@@ -190,7 +305,26 @@ const testimonials = [
       }
     });
 
-    setDots(0);
+    syncDotsFromLayout();
+
+    const io =
+      typeof IntersectionObserver !== "undefined"
+        ? new IntersectionObserver(
+            () => {
+              syncDotsFromLayout();
+            },
+            {
+              root: track,
+              rootMargin: "0px",
+              threshold: [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.35, 0.5, 0.65, 0.8, 1],
+            },
+          )
+        : null;
+    if (io) {
+      slides().forEach((el) => {
+        if (el instanceof HTMLElement) io.observe(el);
+      });
+    }
   })();
 </script>
 
@@ -212,6 +346,33 @@ const testimonials = [
     background: #fff;
     padding: clamp(72px, 10vw, 120px) 0;
     overflow: hidden;
+  }
+
+  .t-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .t-deco-img {
+    position: absolute;
+    top: 0;
+    z-index: 0;
+    pointer-events: none;
+    max-width: min(45vw, 280px);
+    height: auto;
+  }
+
+  .t-deco-img--left {
+    left: 0;
+  }
+
+  .t-deco-img--right {
+    right: 0;
+  }
+
+  .t-deco-svg-mobile {
+    display: none;
+    pointer-events: none;
   }
 
   /* Rayas decorativas arriba-derecha */
@@ -251,7 +412,7 @@ const testimonials = [
 
   .t-eyebrow {
     font-family: "Sora", var(--font-heading), sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 400;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -283,6 +444,14 @@ const testimonials = [
     line-height: 90%;
     letter-spacing: -3.84px;
   }
+  @media (max-width: 768px) {
+    .testimonials-title-accent {
+      font-size: 34px;
+    }
+    .testimonials-title {
+      font-size: 34px;
+    }
+  }
 
   .t-carousel-wrap {
     position: relative;
@@ -300,7 +469,6 @@ const testimonials = [
     box-sizing: border-box;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
     padding: 8px 4px 20px;
     margin: 0 -8px;
     scrollbar-width: none;
@@ -312,14 +480,14 @@ const testimonials = [
     display: none;
   }
 
-  /* Mobile / ≤900px: 1 tarjeta visible a la vez */
+  /* ≤900px: carrusel horizontal con “peek” del siguiente slide */
   .t-slide {
     box-sizing: border-box;
-    flex: 0 0 100%;
-    width: 100%;
-    min-width: 0;
+    flex: 0 0 calc(100% - clamp(40px, 12vw, 56px));
+    width: calc(100% - clamp(40px, 12vw, 56px));
+    min-width: calc(100% - clamp(40px, 12vw, 56px));
     scroll-snap-align: start;
-    scroll-snap-stop: always;
+    scroll-snap-stop: normal;
     text-decoration: none;
     color: inherit;
     display: flex;
@@ -352,6 +520,7 @@ const testimonials = [
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center center;
     display: block;
     opacity: 0.35;
     filter: saturate(0.85);
@@ -408,7 +577,7 @@ const testimonials = [
 
   .t-slide-tag {
     font-family: "Sora", var(--font-heading), sans-serif;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -446,6 +615,11 @@ const testimonials = [
     transform: scale(1.15);
   }
 
+  .t-dot--active:hover {
+    background: #ff530f;
+    transform: scale(1.15);
+  }
+
   .t-dot:focus-visible {
     outline: 2px solid #ff530f;
     outline-offset: 3px;
@@ -456,6 +630,7 @@ const testimonials = [
     .t-slide {
       flex: 0 0 calc((100% - 2 * var(--t-gap)) / 3);
       width: auto;
+      min-width: 0;
       scroll-snap-stop: normal;
     }
 
@@ -584,6 +759,41 @@ const testimonials = [
     .whatsapp-cta {
       font-size: 18px;
       padding: 16px 32px;
+    }
+
+    /* Carrusel “peek”: recorte centrado en el marco + texto centrado bajo la foto */
+    .t-slide-img {
+      object-fit: cover;
+      object-position: center center;
+    }
+
+    .t-slide-meta {
+      align-items: center;
+      text-align: center;
+      padding-inline: 8px;
+    }
+
+    .t-slide-name,
+    .t-slide-tag {
+      text-align: center;
+      max-width: 100%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .t-deco-img {
+      display: none;
+    }
+
+    .t-deco-svg-mobile {
+      display: block;
+      position: absolute;
+      right: 0;
+      top: -32px;
+      width: min(160px, 42vw);
+      height: auto;
+      z-index: 0;
+      opacity: 1;
     }
   }
 </style>

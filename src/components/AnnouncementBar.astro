@@ -8,16 +8,35 @@
 <div class="announcement-bar">
   <div class="announcement-inner">
     <img src="/images/alert.png" alt="Alerta" class="announcement-logo" width="30" height="30" />
-    <p class="announcement-text">
-      <span class="announcement-text-strong">El contenedor cierra en menos de una semana</span><span
-        class="announcement-text-sep"
-        aria-hidden="true"> — </span
-      ><span class="announcement-text-regular">aún estás a tiempo de asegurar tu espacio</span>
-    </p>
+    <div class="announcement-marquee" aria-label="El contenedor cierra en menos de una semana — aún estás a tiempo de asegurar tu espacio">
+      <p class="announcement-text announcement-text--marquee">
+        <span class="announcement-text-content">
+          <span class="announcement-text-strong">El contenedor cierra en menos de una semana</span><span
+            class="announcement-text-sep"
+            aria-hidden="true"> — </span
+          ><span class="announcement-text-regular">aún estás a tiempo de asegurar tu espacio</span>
+        </span>
+        <span class="announcement-text-content announcement-text-content--clone" aria-hidden="true">
+          <span class="announcement-text-strong">El contenedor cierra en menos de una semana</span><span
+            class="announcement-text-sep"
+            aria-hidden="true"> — </span
+          ><span class="announcement-text-regular">aún estás a tiempo de asegurar tu espacio</span>
+        </span>
+      </p>
+    </div>
   </div>
 </div>
 
 <style>
+  @keyframes announcement-marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-50% - var(--announcement-gap) / 2));
+    }
+  }
+
   .announcement-bar {
     position: relative;
     display: flex;
@@ -37,6 +56,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 12px;
+  }
+
+  .announcement-marquee {
+    min-width: 0;
   }
 
   .announcement-text {
@@ -49,6 +73,14 @@
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 0.02em;
+  }
+
+  .announcement-text--marquee {
+    display: block;
+  }
+
+  .announcement-text-content--clone {
+    display: none;
   }
 
   .announcement-text-strong {
@@ -69,10 +101,46 @@
       padding-block: 14px;
     }
 
+    .announcement-inner {
+      justify-content: flex-start;
+    }
+
+    .announcement-marquee {
+      flex: 1;
+      overflow: hidden;
+    }
+
     .announcement-text {
       font-size: 12px;
       letter-spacing: 0.04em;
-      line-height: 1.35;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .announcement-text--marquee {
+      --announcement-gap: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--announcement-gap);
+      min-width: max-content;
+      will-change: transform;
+      animation: announcement-marquee-scroll 14s linear infinite;
+    }
+
+    .announcement-text-content {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .announcement-text-content--clone {
+      display: inline-flex;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .announcement-text--marquee {
+      animation: none;
     }
   }
 

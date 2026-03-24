@@ -39,6 +39,12 @@ const orderedSlides = computed(() => {
     return { slide: props.slides[sourceIndex]!, sourceIndex };
   });
 });
+
+const activeSlide = computed(() => {
+  const n = props.slides.length;
+  if (n === 0) return null;
+  return props.slides[activeIdx.value % n] ?? null;
+});
 const navPendingIndex = ref<number | null>(null);
 
 let navLockTimer: ReturnType<typeof setTimeout> | null = null;
@@ -193,6 +199,43 @@ function onTrackPointerDown() {
   suppressScrollSyncUntil = 0;
 }
 
+/** Tap / clic en una tarjeta lateral: llevar ese paso al frente (sin confundir con arrastre). */
+const slidePointerDown = ref<{
+  x: number;
+  y: number;
+  pid: number;
+  sourceIndex: number;
+  domIndex: number;
+} | null>(null);
+
+function onSlidePointerDown(e: PointerEvent, sourceIndex: number, domIndex: number) {
+  if (e.button !== 0 && e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
+  slidePointerDown.value = {
+    x: e.clientX,
+    y: e.clientY,
+    pid: e.pointerId,
+    sourceIndex,
+    domIndex,
+  };
+}
+
+function onSlidePointerUp(e: PointerEvent, sourceIndex: number, domIndex: number) {
+  const start = slidePointerDown.value;
+  if (!start || start.pid !== e.pointerId) return;
+  slidePointerDown.value = null;
+  if (start.sourceIndex !== sourceIndex || start.domIndex !== domIndex) return;
+  if (domIndex === 0) return;
+  const dx = Math.abs(e.clientX - start.x);
+  const dy = Math.abs(e.clientY - start.y);
+  if (dx > 16 || dy > 16) return;
+  goTo(sourceIndex);
+}
+
+function onSlidePointerCancel(e: PointerEvent) {
+  const start = slidePointerDown.value;
+  if (start && start.pid === e.pointerId) slidePointerDown.value = null;
+}
+
 /**
  * Al terminar el scroll: no reordenar durante el arrastre (solo aquí).
  * El índice DOM `d` sumado al activo da el slide lógico en bucle.
@@ -257,6 +300,7 @@ let stopKeyNav: (() => void) | undefined;
 function goTo(i: number) {
   const n = props.slides.length;
   if (i < 0 || i >= n) return;
+  if (i === activeIdx.value && navPendingIndex.value === null) return;
 
   activeIdx.value = i;
   navPendingIndex.value = i;
@@ -300,27 +344,57 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="trust-carousel-wrap">
-    <div class="trust-carousel-clip">
-      <div
-        :id="trackId"
-        ref="track"
-        class="trust-carousel"
-        :class="{ 'trust-carousel--snap-layout': snapLayout }"
-        tabindex="0"
-        role="region"
-        aria-label="Etapas del consolidado"
-        @pointerdown.passive="onTrackPointerDown"
-      >
+  <div class="trust-carousel-root">
+    <header v-if="activeSlide" class="trust-header" aria-labelledby="trust-heading">
+      <p class="trust-eyebrow">Confía en nosotros</p>
+      <Transition name="trust-head-swap" mode="out-in">
+        <h2 :id="'trust-heading'" :key="activeIdx" class="trust-title">
+          <template v-if="activeSlide.plain">
+            <span class="trust-title-line trust-title-line--accent-full">{{ activeSlide.plain }}</span>
+          </template>
+          <template v-else>
+            <span class="trust-title-line">
+              {{ activeSlide.labelBefore
+              }}<span
+                class="trust-title-accent-inline"
+                :class="{ 'trust-title-accent-inline--eb': activeSlide.boldIsStrong }"
+                >{{ activeSlide.labelBold }}</span
+              >{{ activeSlide.labelAfter }}
+            </span>
+          </template>
+        </h2>
+      </Transition>
+      <p class="trust-tagline">
+        <span class="trust-tagline-line">Más de <span class="trust-tagline-accent">10 años</span> consolidando</span>
+        <span class="trust-tagline-line">carga desde China</span>
+      </p>
+    </header>
+
+    <div class="trust-carousel-wrap">
+      <div class="trust-carousel-clip">
+        <div
+          :id="trackId"
+          ref="track"
+          class="trust-carousel"
+          :class="{ 'trust-carousel--snap-layout': snapLayout }"
+          tabindex="0"
+          role="region"
+          aria-label="Etapas del consolidado"
+          @pointerdown.passive="onTrackPointerDown"
+        >
         <article
           v-for="(item, j) in orderedSlides"
           :key="item.slide.step"
           class="trust-slide"
-          :class="{ 'trust-slide--active': j === 0 }"
+          :class="{ 'trust-slide--active': j === 0, 'trust-slide--selectable': j !== 0 }"
           data-trust-slide
           :data-trust-tier="String(Math.min(j, 4))"
           :data-trust-source-index="String(item.sourceIndex)"
           :aria-label="slideAria(item.slide)"
+          :aria-current="j === 0 ? 'step' : undefined"
+          @pointerdown="onSlidePointerDown($event, item.sourceIndex, j)"
+          @pointerup="onSlidePointerUp($event, item.sourceIndex, j)"
+          @pointercancel="onSlidePointerCancel"
         >
           <div class="trust-slide-visual">
             <img
@@ -348,28 +422,128 @@ onBeforeUnmount(() => {
             </p>
           </div>
         </article>
+        </div>
       </div>
-    </div>
 
-    <div class="trust-dots" role="tablist" aria-label="Paso del carrusel">
-      <button
-        v-for="(_, i) in slides"
-        :key="i"
-        type="button"
-        class="trust-dot"
-        :class="{ 'trust-dot--active': i === activeIdx }"
-        role="tab"
-        :aria-selected="i === activeIdx"
-        :aria-controls="trackId"
-        @click="goTo(i)"
-      >
-        <span class="visually-hidden">Paso {{ i + 1 }}</span>
-      </button>
+      <div class="trust-dots" role="tablist" aria-label="Paso del carrusel">
+        <button
+          v-for="(_, i) in slides"
+          :key="i"
+          type="button"
+          class="trust-dot"
+          :class="{ 'trust-dot--active': i === activeIdx }"
+          role="tab"
+          :aria-selected="i === activeIdx"
+          :aria-controls="trackId"
+          @click="goTo(i)"
+        >
+          <span class="visually-hidden">Paso {{ i + 1 }}</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+  .trust-carousel-root {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .trust-header {
+    text-align: left;
+    margin-bottom: clamp(36px, 5vw, 52px);
+    max-width: 44rem;
+  }
+
+  .trust-eyebrow {
+    font-family: 'Sora', var(--font-heading), system-ui, sans-serif;
+    font-size: clamp(14px, 1.8vw, 20px);
+    font-weight: 400;
+    line-height: 1.26;
+    color: #ff733b;
+    text-transform: uppercase;
+    margin: 0 0 clamp(16px, 2.2vw, 24px);
+    letter-spacing: 0.04em;
+  }
+
+  .trust-title {
+    font-family: 'Epilogue', var(--font-heading), system-ui, sans-serif;
+    font-size: clamp(2.25rem, 5.5vw, 4rem);
+    font-weight: 300;
+    color: #fff;
+    letter-spacing: -0.06em;
+    line-height: 0.98;
+    margin: 0 0 clamp(14px, 2vw, 20px);
+    min-height: 2.2em;
+  }
+
+  .trust-title-line {
+    display: block;
+  }
+
+  .trust-title-line--accent-full {
+    background: linear-gradient(90deg, #ff5410 0%, #ff733b 75.48%, #ff5410 100%);
+    background-size: 120% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-weight: 500;
+  }
+
+  .trust-title-accent-inline {
+    font-weight: 500;
+    background: linear-gradient(90deg, #ff5410 0%, #ff733b 75.48%, #ff5410 100%);
+    background-size: 120% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .trust-title-accent-inline--eb {
+    font-weight: 700;
+  }
+
+  .trust-tagline {
+    margin: 0;
+    font-family: 'Epilogue', var(--font-body), system-ui, sans-serif;
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .trust-tagline-line {
+    display: block;
+  }
+
+  .trust-tagline-line:first-child {
+    margin-bottom: 0.08em;
+  }
+
+  .trust-tagline-accent {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  .trust-head-swap-enter-active,
+  .trust-head-swap-leave-active {
+    transition:
+      opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .trust-head-swap-enter-from,
+  .trust-head-swap-leave-to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
   .visually-hidden {
     position: absolute;
     width: 1px;
@@ -456,6 +630,11 @@ onBeforeUnmount(() => {
     transition:
       flex-basis 0.42s var(--trust-ease),
       width 0.42s var(--trust-ease);
+  }
+
+  .trust-slide--selectable {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .trust-slide[data-trust-tier='0'] {

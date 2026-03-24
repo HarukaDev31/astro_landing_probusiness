@@ -3,18 +3,43 @@
 
 <footer class="footer">
   <div class="footer-inner container">
-    <div class="footer-logo">
-      <svg width="140" height="24" viewBox="0 0 140 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <text x="0" y="18" font-family="Sora, sans-serif" font-size="16" font-weight="700" fill="white" letter-spacing="-0.3">PRO BUSINESS</text>
+    <div class="footer-brand">
+      <span class="footer-logo-text" aria-hidden="true">probusiness</span>
+      <svg
+        class="footer-logo-mark"
+        width="26"
+        height="26"
+        viewBox="0 0 28 28"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <line
+          x1="14"
+          y1="14"
+          x2="14"
+          y2="4.5"
+          stroke="#ff530f"
+          stroke-width="2.35"
+          stroke-linecap="round"
+        />
+        <g stroke="#fff" stroke-width="2.15" stroke-linecap="round">
+          <line x1="14" y1="14" x2="14" y2="4.5" transform="rotate(60 14 14)" />
+          <line x1="14" y1="14" x2="14" y2="4.5" transform="rotate(120 14 14)" />
+          <line x1="14" y1="14" x2="14" y2="4.5" transform="rotate(180 14 14)" />
+          <line x1="14" y1="14" x2="14" y2="4.5" transform="rotate(240 14 14)" />
+          <line x1="14" y1="14" x2="14" y2="4.5" transform="rotate(300 14 14)" />
+        </g>
       </svg>
     </div>
 
     <div class="footer-copy-block">
       <p class="footer-address">Calle Los Robles — Chorrillos, Lima — Perú</p>
-      <p class="footer-copy">© 2026 Pro Business – Importación desde China</p>
+      <p class="footer-copy-line">© 2026 Pro Business — Curso de</p>
+      <p class="footer-copy-line">Importación desde China</p>
     </div>
 
-    <div class="footer-social">
+    <div class="footer-social" aria-label="Redes sociales">
       <a href="#" aria-label="Facebook" class="footer-social-link">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
           <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -49,7 +74,7 @@
 <style>
   .footer {
     background: #000;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding: 32px 0;
   }
 
@@ -60,37 +85,62 @@
     gap: 20px;
   }
 
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .footer-logo-text {
+    font-family: 'Epilogue', var(--font-body), system-ui, sans-serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+    text-transform: lowercase;
+    line-height: 1;
+  }
+
+  .footer-logo-mark {
+    flex-shrink: 0;
+    display: block;
+  }
+
   .footer-copy-block {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     text-align: center;
   }
 
   .footer-address {
     display: none;
-    font-family: 'Epilogue', sans-serif;
+    font-family: 'Epilogue', var(--font-body), system-ui, sans-serif;
     font-size: 13px;
+    font-weight: 400;
     color: rgba(255, 255, 255, 0.55);
     max-width: 280px;
     line-height: 1.4;
+    margin: 0;
   }
 
-  .footer-copy {
-    font-family: 'Sora', sans-serif;
-    font-size: 14px;
+  .footer-copy-line {
+    font-family: 'Epilogue', var(--font-body), system-ui, sans-serif;
+    font-size: 13px;
     font-weight: 400;
-    color: #fff;
-    letter-spacing: -0.96px;
-    opacity: 0.7;
-    text-align: center;
+    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+    margin: 0;
   }
 
   .footer-social {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-shrink: 0;
   }
 
   .footer-social-link {
@@ -100,26 +150,51 @@
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.08);
     color: #fff;
     transition: background 0.2s;
   }
 
   .footer-social-link:hover {
-    background: rgba(255,83,15,0.3);
-  }
-
-  @media (max-width: 768px) {
-    .footer-address {
-      display: block;
-    }
+    background: rgba(255, 83, 15, 0.3);
   }
 
   @media (max-width: 640px) {
+    .footer {
+      padding: clamp(28px, 8vw, 40px) 0 clamp(32px, 10vw, 48px);
+    }
+
     .footer-inner {
       flex-direction: column;
-      gap: 16px;
-      text-align: center;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 20px;
+      padding-inline: clamp(20px, 5vw, 28px);
+    }
+
+    .footer-copy-block {
+      align-items: flex-start;
+      text-align: left;
+      gap: 2px;
+    }
+
+    .footer-copy-line {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .footer-address {
+      display: none;
+    }
+
+    .footer-social {
+      display: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .footer-address {
+      display: block;
     }
   }
 </style>

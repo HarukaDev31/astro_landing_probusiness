@@ -13,24 +13,20 @@ import SoonContainers from "./SoonContainers.vue";
     <div class="hero-desktop-shell">
       <div class="hero-stage-wrap">
         <div class="hero-stage">
-          <div class="hero-stage-chevrons" aria-hidden="true">
-            <span class="hero-chevron"></span>
-            <span class="hero-chevron"></span>
-            <span class="hero-chevron"></span>
-          </div>
+        
           <img
             src="/images/salidas.png"
             alt="Próximas salidas de contenedor"
-            class="hero-salidas"
+            class="hero-salidas hero-salidas-pos"
           />
           <img
             src="/images/probbd.png"
             alt=""
-            class="hero-probbd"
+            class="hero-probbd hero-probbd-pos"
             role="presentation"
           />
-          <img src="/images/calendarr.png" alt="" class="hero-calendarr" role="presentation" />
-          <div class="hero-dates">
+          <img src="/images/calendarr.png" alt="" class="hero-calendarr hero-calendarr-pos" role="presentation" />
+          <div class="hero-dates hero-dates-pos">
             <SoonContainers client:load />
           </div>
         </div>
@@ -42,19 +38,18 @@ import SoonContainers from "./SoonContainers.vue";
     <div class="hero-mobile-visual">
       <div class="hero-mobile-visual-bg"></div>
       <div class="hero-mobile-collage">
-        <img src="/images/probbd.png" alt="" class="hero-mobile-probbd" role="presentation" />
-        <img src="/images/narnajonn.png" alt="" class="hero-mobile-box" role="presentation" />
-        <img src="/images/salidas.png" alt="" class="hero-mobile-salidas" />
-        <img src="/images/calendarr.png" alt="" class="hero-mobile-cal" role="presentation" />
-        <div class="hero-mobile-dates">
+        <img src="/images/probbd.png" alt="" class="hero-mobile-probbd hero-mobile-probbd-pos" role="presentation" />
+        <img src="/images/narnajonn.png" alt="" class="hero-mobile-box hero-mobile-box-pos" role="presentation" />
+        <img src="/images/salidas.png" alt="" class="hero-mobile-salidas hero-mobile-salidas-pos" />
+        <img src="/images/calendarr.png" alt="" class="hero-mobile-cal hero-mobile-cal-pos" role="presentation" />
+        <div class="hero-mobile-dates hero-mobile-dates-pos">
           <SoonContainers client:load />
         </div>
-        <div class="hero-mobile-chevrons" aria-hidden="true">
-          <span class="hero-chevron hero-chevron--mobile"></span>
-          <span class="hero-chevron hero-chevron--mobile"></span>
-          <span class="hero-chevron hero-chevron--mobile"></span>
-        </div>
+       
       </div>
+    </div>
+    <div class="hero-mobile-cta-wrap">
+      <a href="#form" class="hero-mobile-cta">Cotizar Ahora</a>
     </div>
   </div>
 </section>
@@ -191,43 +186,55 @@ import SoonContainers from "./SoonContainers.vue";
   }
 
   .hero-probbd {
-    position: absolute;
-    left: 18%;
-    bottom: calc(-20px * var(--hero-stage-scale));
     width: 72%;
     max-width: none;
     z-index: 2;
     filter: drop-shadow(0 24px 60px rgba(0, 0, 0, 0.6));
   }
 
+  .hero-probbd-pos {
+    position: absolute;
+    left: 18%;
+    bottom: calc(-20px * var(--hero-stage-scale));
+  }
+
   /* Panel salidas: % del artboard para mantener orden en cualquier escala */
   .hero-salidas {
-    position: absolute;
-    left: -22%;
-    bottom: calc(-50px * var(--hero-stage-scale));
     width: 56%;
     max-width: none;
     z-index: 2;
     filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
   }
 
-  .hero-calendarr {
+  .hero-salidas-pos {
     position: absolute;
-    top: 5%;
-    right: 2%;
+    left: -22%;
+    bottom: calc(-50px * var(--hero-stage-scale));
+  }
+
+  .hero-calendarr {
     width: 22%;
     max-width: none;
     object-fit: contain;
     z-index: 6;
   }
 
+  .hero-calendarr-pos {
+    position: absolute;
+    top: 5%;
+    right: 2%;
+  }
+
   .hero-dates {
+    z-index: 5;
+  }
+
+  .hero-dates-pos {
     position: absolute;
     right: -14%;
     top: 50%;
     transform: translateY(-50%) scale(calc(0.78 * var(--hero-stage-scale)));
     transform-origin: right center;
-    z-index: 5;
   }
 
   @media (max-width: 1100px) {
@@ -246,9 +253,9 @@ import SoonContainers from "./SoonContainers.vue";
 
   .hero-mobile-visual {
     position: relative;
-    height: clamp(320px, 78vw, 380px);
+    height: clamp(460px, 108vw, 620px);
     width: 100%;
-    max-width: 520px;
+    max-width: 100%;
     margin: 0 auto;
     overflow: visible;
   }
@@ -271,7 +278,7 @@ import SoonContainers from "./SoonContainers.vue";
 
   .hero-mobile-visual-bg {
     position: absolute;
-    inset: 0;
+    inset: -88px 0 0;
     z-index: 0;
     background-image:
       linear-gradient(
@@ -281,7 +288,7 @@ import SoonContainers from "./SoonContainers.vue";
         rgba(22, 22, 22, 0.88) 68%,
         #000000 100%
       ),
-      url('/images/hero-bg-web.png');
+      url('/images/hero-bg-mobile.png');
     background-position: center top;
     background-size: cover;
     background-repeat: no-repeat;
@@ -292,60 +299,104 @@ import SoonContainers from "./SoonContainers.vue";
     position: absolute;
     left: 0;
     right: 0;
-    top: 32px;
+    top: 8px;
     bottom: 0;
     z-index: 1;
   }
 
   .hero-mobile-probbd {
-    position: absolute;
-    left: 18%;
-    right: -2%;
-    bottom: 2%;
-    width: 78%;
+    width: 58%;
     max-width: 320px;
     margin: 0 auto;
-    z-index: 1;
+    z-index: 3;
     object-fit: contain;
     filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.5));
   }
 
-  .hero-mobile-box {
+  .hero-mobile-probbd-pos {
     position: absolute;
-    left: 2%;
-    top: 20%;
+    left: 0%;
+    right: -30%;
+    bottom: 20%;
+  }
+
+  .hero-mobile-box {
     width: 40%;
     z-index: 2;
     object-fit: contain;
     opacity: 0.98;
   }
 
-  .hero-mobile-salidas {
+  .hero-mobile-box-pos {
     position: absolute;
-    left: -12%;
-    bottom: 6%;
+    left: 2%;
+    top: 20%;
+  }
+
+  .hero-mobile-salidas {
     width: 62%;
     max-width: 248px;
-    z-index: 3;
+    z-index: 2;
     filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.45));
   }
 
-  .hero-mobile-cal {
+  .hero-mobile-salidas-pos {
     position: absolute;
-    right: 18%;
-    top: 1%;
+    left: 0%;
+    top: 0%;
+  }
+
+  .hero-mobile-cal {
     width: 26%;
-    z-index: 5;
+    z-index: 6;
     object-fit: contain;
   }
 
-  .hero-mobile-dates {
+  .hero-mobile-cal-pos {
     position: absolute;
-    right: -6%;
-    top: 34%;
-    transform: scale(0.52);
+    right: 10%;
+    top: 8%;
+  }
+
+  .hero-mobile-dates {
+    z-index: 5;
+  }
+
+  .hero-mobile-dates-pos {
+    position: absolute;
+    left: 8%;
+    top:10%;
+    transform: scale(0.42);
     transform-origin: right center;
-    z-index: 6;
+  }
+
+  .hero-mobile-cta-wrap {
+    display: none;
+    justify-content: center;
+    margin-top: -70px;
+    padding: 0 16px 20px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .hero-mobile-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: min(230px, 100%);
+    padding: 12px 20px;
+    background: linear-gradient(to right, #FF530F, #E84403);
+    border-radius: 18px;
+    font-family: 'Epilogue', sans-serif;
+    font-size: 23px;
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+
+  .hero-mobile-cta:hover {
+    opacity: 0.9;
   }
 
   @media (max-width: 1024px) {
@@ -361,6 +412,15 @@ import SoonContainers from "./SoonContainers.vue";
 
     .hero-mobile {
       display: block;
+    }
+
+    .hero-mobile-cta-wrap {
+      display: flex;
+    }
+
+    .hero-mobile-visual-bg {
+      background-size: 100% auto;
+      background-position: center 4px;
     }
   }
 </style>

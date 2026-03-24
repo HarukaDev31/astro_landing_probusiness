@@ -2,7 +2,8 @@
   <div class="point-wrap">
     <header class="point-header">
       <h2 id="point-heading" class="point-title">
-        ¿En qué <span class="point-title-accent">punto</span> <br> estás?
+        ¿En qué <span class="point-title-accent">punto</span>
+        <br /> estás?
       </h2>
       <p class="point-desc">
         Elige la opción que mejor <strong>describe tu situación</strong> ahora mismo
@@ -24,7 +25,10 @@
               >productos novedosos</strong
             >.
           </p>
-          <div style="position: relative; bottom: 0;">
+          <div
+            class="point-card-cta-wrap"
+            style="position: relative; bottom: 0;"
+          >
             <a href="#" class="point-card-btn point-card-btn--free">
               <span class="point-btn-icon" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -37,30 +41,53 @@
               </span>
               Ver recurso gratuito
             </a>
+          </div>
+        </div>
+        <div class="point-card-media point-card-media--first">
+          <picture>
+            <source
+              media="(min-width: 901px)"
+              srcset="/images/point-card-1-desktop.png"
+            />
+            <img
+              src="/images/point-card-1-mobile.png"
+              alt="Recursos para elegir producto a importar"
+              class="point-card-img point-card-img--first"
+              loading="lazy"
+              width="560"
+              height="420"
+              decoding="async"
+            />
+          </picture>
+          <div class="point-card-media-shade" aria-hidden="true"></div>
+        </div>
+        <div
+          class="point-card-mobile-cta"
+          style="position: relative; bottom: 0;"
+        >
+          <a href="#" class="point-card-btn point-card-btn--free">
+            <span class="point-btn-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 5v14M5 12h14"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"></path>
+              </svg>
+            </span>
+            Ver recurso gratuito
             <img
               src="/images/arrows.png"
               alt="Arrow right"
-              style="position: absolute; top: 30px; right: -80px;"
+              class="point-card-arrow-hint"
             />
-          </div>
-        </div>
-        <div class="point-card-media">
-          <img
-            src="/images/openbox.png"
-            alt="Recursos para elegir producto a importar"
-            class="point-card-img"
-            loading="lazy"
-            width="560"
-            height="420"
-            decoding="async"
-          />
-          <div class="point-card-media-shade" aria-hidden="true"></div>
+          </a>
         </div>
       </article>
 
       <article
         class="point-card point-card--warm point-card--align-end"
-        style="background: url('/images/gradientecard2.png') no-repeat center center; background-size: cover;border: 1px solid rgba(255, 255, 255, 0.35);"
+        style="background: url('/images/gradientecard2.png') no-repeat center center; background-size: cover;"
       >
         <div class="point-card-copy">
           <p class="point-card-quote">
@@ -72,7 +99,7 @@
             Te explicamos cómo conseguir <strong>proveedores confiables</strong
             >.
           </p>
-          <div style="position: relative; bottom: 0;">
+          <div class="point-card-cta-wrap">
             <a href="#" class="point-card-btn point-card-btn--free">
               <span class="point-btn-icon" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -87,21 +114,41 @@
             </a>
           </div>
         </div>
-        <div class="point-card-media">
-          <img
-            src="/images/aunnoproveedor.png"
-            alt="Logística y proveedores"
-            class="point-card-img"
-            loading="lazy"
-            width="560"
-            height="420"
-            decoding="async"
-          />
+        <div class="point-card-media point-card-media--second">
+          <picture>
+            <source
+              media="(max-width: 768px)"
+              srcset="/images/point-card-2-mobile.png"
+            />
+            <img
+              src="/images/aunnoproveedor.png"
+              alt="Logística y proveedores"
+              class="point-card-img point-card-img--second"
+              loading="lazy"
+              width="560"
+              height="420"
+              decoding="async"
+            />
+          </picture>
           <div class="point-card-media-shade" aria-hidden="true"></div>
+        </div>
+        <div class="point-card-mobile-cta">
+          <a href="#" class="point-card-btn point-card-btn--free">
+            <span class="point-btn-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 5v14M5 12h14"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"></path>
+              </svg>
+            </span>
+            Ver recurso gratuito
+          </a>
         </div>
       </article>
 
-      <article class="point-card point-card--align-start third-card" style="background: url('/images/listoimportar.png') no-repeat center center; background-size: cover;border: 1px solid rgba(255, 255, 255, 0.35);">
+      <article class="point-card point-card--align-start third-card">
         <div class="point-card-copy">
           <p class="point-card-quote">
             <span class="point-quote-mark" aria-hidden="true">"</span>
@@ -133,7 +180,6 @@
             </span>
           </a>
         </div>
-       
       </article>
     </div>
   </div>
@@ -174,7 +220,6 @@
     line-height: 0.98;
     max-width: min(420px, 100%);
     margin: 0;
-
   }
 
   .point-title-accent {
@@ -182,7 +227,6 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    
   }
 
   .point-desc {
@@ -204,7 +248,7 @@
   .point-cards {
     display: flex;
     flex-direction: column;
-    gap: clamp(28px, 4vw, 40px);
+    gap: clamp(40px, 4vw, 50px);
     width: 100%;
     align-items: stretch;
   }
@@ -229,6 +273,7 @@
     min-height: clamp(400px, 34vw, 380px);
     border-radius: var(--radius-card-large);
     overflow: hidden;
+
     box-shadow:
       0 0 0 1px rgba(255, 83, 15, 0.06),
       0 28px 56px rgba(0, 0, 0, 0.55),
@@ -237,7 +282,12 @@
     grid-template-columns: minmax(0, 1fr) minmax(300px, 47%);
     width: max(350px, 60%);
   }
-
+  /**max-width: 769px */
+  @media (max-width: 769px) {
+    .point-card {
+      padding: 1.5em 1em;
+    }
+  }
   .point-card--align-start .point-card-copy {
     grid-column: 1;
   }
@@ -258,8 +308,6 @@
     grid-column: 1;
   }
 
-  
-
   .point-card--warm .point-card-body {
     color: rgba(255, 255, 255, 0.95);
   }
@@ -273,8 +321,8 @@
   }
 
   .point-card-copy {
-    padding: clamp(32px, 4.5vw, 52px) clamp(28px, 4vw, 48px)
-      clamp(32px, 4.5vw, 52px) clamp(32px, 4vw, 56px);
+    padding: clamp(38px, 5.2vw, 58px) clamp(28px, 4vw, 48px)
+      clamp(38px, 5.2vw, 58px) clamp(32px, 4vw, 56px);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -312,6 +360,12 @@
     );
   }
 
+  .point-card-media--second picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
   .point-card--warm .point-card-media-shade {
     background: linear-gradient(
       100deg,
@@ -321,9 +375,9 @@
   }
 
   .point-card-quote {
-    font-family: var(--font-heading);
-    font-size: clamp(26px, 2.8vw, 36px);
-    font-weight: 400;
+    font-family: var(--font-body, "Epilogue", sans-serif);
+    font-size: clamp(22px, 2.35vw, 31px);
+    font-weight: 300;
     color: #fff;
     line-height: 1.06;
     letter-spacing: -0.03em;
@@ -343,7 +397,7 @@
   }
 
   .point-card-body {
-    font-family: var(--font-body);
+    font-family: var(--font-body, "Epilogue", sans-serif);
     font-size: clamp(16px, 1.5vw, 19px);
     font-weight: 300;
     color: rgba(255, 255, 255, 0.86);
@@ -359,13 +413,14 @@
     margin-top: 6px;
     padding: 14px 22px 14px 18px;
     width: 100%;
-    min-height: 48px;
-    border-radius: 20px;
-    font-family: var(--font-heading);
-    font-size: 20px;
+    min-height: 52px;
+    border-radius: 14px;
+    border: 0.5px solid #ff6a29;
+    font-family: var(--font-body, "Epilogue", sans-serif);
+    font-size: 18px;
     line-height: 1.2;
     text-align: center;
-    font-weight: 500;
+    font-weight: 300;
     color: #fff;
     text-decoration: none;
     transition:
@@ -373,20 +428,25 @@
       box-shadow 0.2s ease,
       filter 0.2s ease;
     align-self: flex-start;
-    background: var(--color-orange-primary);
-    box-shadow:
-      0 4px 20px rgba(255, 83, 15, 0.35),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    justify-content: center;
+    background: linear-gradient(
+      90deg,
+      #ff5410 0%,
+      #ff733b 46.49%,
+      #ff5410 100%
+    );
+    box-shadow: 0 1px 18.4px 12px rgba(255, 106, 41, 0.18);
   }
 
   .point-btn-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     border-radius: 8px;
     flex-shrink: 0;
+    align-self: center;
   }
 
   .point-card-btn--register {
@@ -395,32 +455,35 @@
     max-width: 90%;
     padding: 12px 20px 12px 14px;
     gap: 14px;
-    border-radius: 10px;
-    text-align: left;
+    border-radius: 14px;
+    text-align: center;
   }
 
   .point-register-text {
+    font-family: var(--font-body, "Epilogue", sans-serif);
     text-decoration: underline;
     text-underline-offset: 3px;
     text-decoration-thickness: 1px;
     font-size: 15px;
-    font-weight: 400;
+    font-weight: 300;
     line-height: 1.35;
     max-width: 17rem;
+    text-align: center;
   }
 
   .point-btn-ellipse {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     border-radius: 999px;
-    background:white;
-    color:var(--color-orange-primary);
-    stroke:var(--color-orange-primary)!important;
+    background: white;
+    color: var(--color-orange-primary);
+    stroke: var(--color-orange-primary) !important;
     stroke-width: 2px;
     flex-shrink: 0;
+    align-self: center;
   }
 
   .point-card-btn:hover {
@@ -431,6 +494,45 @@
   .point-card-btn:focus-visible {
     outline: 2px solid #fff;
     outline-offset: 3px;
+  }
+
+  .point-card-mobile-cta {
+    display: none;
+  }
+
+  .point-card-media--first .point-card-media-shade {
+    background: none;
+  }
+
+  .point-card-media--first {
+    position: relative;
+  }
+
+  .point-card-media--first picture {
+    display: contents;
+  }
+
+  /* Desktop: caja pegada a esquina inferior izquierda del bloque de imagen (como referencia) */
+  .point-card-img--first {
+    position: absolute;
+    right: -0%;
+    z-index: 9;
+    bottom: 0%;
+    width: 350px;
+    height: 350px;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: left bottom;
+  }
+
+  @media (max-width: 769px) {
+    .point-card-img--first {
+      left: 0;
+      right: auto;
+      bottom: 0;
+      transform: none;
+      object-position: left bottom;
+    }
   }
 
   @media (max-width: 900px) {
@@ -447,36 +549,39 @@
     .point-header {
       flex-direction: column;
       align-items: flex-start;
-   
     }
 
     .point-card,
     .point-card--align-end {
       grid-template-columns: 1fr;
       min-height: unset;
-      width: 100% !important;
-      margin-left: 0 !important;
-      margin-right: 0 !important;
+      width: min(100%, 360px) !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+      border-radius: 14px;
     }
 
     .point-card-media {
       grid-column: auto !important;
-      grid-row: 1;
-      min-height: 220px;
-      max-height: min(52vw, 320px);
-      aspect-ratio: 16 / 10;
+      grid-row: 2;
+      min-height: 136px;
+      max-height: 170px;
+      aspect-ratio: 16 / 8;
+      position: relative;
     }
 
     .point-card-copy {
       grid-column: auto !important;
-      grid-row: 2;
+      grid-row: 1;
       justify-content: flex-start;
-      padding-top: clamp(24px, 5vw, 36px);
+      gap: 10px;
+      padding: 18px 14px 10px;
     }
 
     .point-card-img {
-      min-height: 220px;
-      max-height: min(52vw, 320px);
+      min-height: 136px;
+      max-height: 170px;
+      object-position: center bottom;
     }
 
     .point-card-media-shade {
@@ -485,6 +590,81 @@
         transparent 35%,
         rgba(0, 0, 0, 0.55) 100%
       );
+    }
+
+    .point-card-quote {
+      font-size: clamp(28px, 8vw, 34px);
+      line-height: 1.02;
+    }
+
+    .point-card-body {
+      font-size: 12px;
+      line-height: 1.35;
+      max-width: 220px;
+    }
+
+    .point-card-btn {
+      width: auto;
+      min-height: 44px;
+      padding: 7px 12px;
+      border-radius: 14px;
+      font-size: 14px;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .point-btn-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .point-card-cta-wrap {
+      width: 100%;
+      position: relative;
+    }
+
+    .point-card-arrow-hint {
+      position: absolute;
+      top: 30px;
+      right: -80px;
+    }
+
+    .point-card--warm {
+      box-shadow:
+        0 28px 56px rgba(0, 0, 0, 0.55),
+        0 0 80px -20px rgba(255, 83, 15, 0.15);
+    }
+
+    .point-card-media--second picture,
+    .point-card-media--second img,
+    .point-card-img--second {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Card 1: caja centrada abajo (no pegada a la esquina como en desktop) */
+    .point-card-media--first {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding: 0 clamp(10px, 3vw, 16px) clamp(6px, 2vw, 12px);
+      box-sizing: border-box;
+      aspect-ratio: auto;
+      position: relative;
+    }
+
+    .point-card-media--first .point-card-img--first {
+      position: relative;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      transform: none;
+      width: min(82%, 280px);
+      height: auto;
+      max-height: 100%;
+      object-fit: contain;
+      object-position: center bottom;
     }
   }
 
@@ -500,27 +680,219 @@
   }
 
   .first-card {
-    
     border-radius: 20px;
-    background:
-     
-      radial-gradient(
-        303.55% 219.67% at 107.62% 128.64%,
-        #ff5410 0%,
-        rgba(255, 84, 16, 0.73) 28.88%,
-        rgba(255, 84, 16, 0.15) 43.48%,
-        rgba(255, 84, 16, 0.11) 57.19%,
-        rgba(255, 84, 16, 0) 100%
-      );
+    background: radial-gradient(
+      303.55% 219.67% at 107.62% 128.64%,
+      #ff5410 0%,
+      rgba(255, 84, 16, 0.73) 28.88%,
+      rgba(255, 84, 16, 0.15) 43.48%,
+      rgba(255, 84, 16, 0.11) 57.19%,
+      rgba(255, 84, 16, 0) 100%
+    );
     background-blend-mode: plus-darker, normal;
     backdrop-filter: blur(2px);
   }
+  .third-card {
+    background: url("/images/listoimportar.png") no-repeat center center;
+    background-size: cover;
+    border: none !important;
+  }
   /**mobile third card min height 300px */
   @media (max-width: 768px) {
+    .point-cards {
+      gap: 12px;
+    }
+
+    .point-wrap {
+      width: 92%;
+      padding: 0;
+    }
+
+    .point-card--align-start,
+    .point-card--align-end {
+      width: min(100%, 330px) !important;
+      min-height: 440px;
+      position: relative;
+    }
+
+    .point-card-quote {
+      font-size: clamp(24px, 7.2vw, 32px);
+      line-height: 1.04;
+    }
+
+    .point-card-body {
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .point-card-copy {
+      gap: 16px;
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+
     .third-card {
-      min-height: 450px;
-      /**center image transform: translateY(-50%) */
-      background-position: center center;
+      min-height: 440px;
+      border-radius: 24px !important;
+      border: 0.5px solid #fff !important;
+
+      display: flex;
+      align-items: flex-start;
+      /* background image: un poco más arriba del borde inferior del card */
+      background-image: url("/images/point-card-3-mobile.png");
+      background-size: 84% auto;
+      background-position: center bottom 32px;
+      background-repeat: no-repeat;
+    }
+
+    .third-card .point-card-copy {
+      padding-bottom: 236px;
+    }
+
+    .third-card .point-card-quote {
+      font-size: clamp(20px, 5.8vw, 28px);
+    }
+
+    .point-card-media {
+      min-height: 220px;
+      max-height: 280px;
+      aspect-ratio: 16 / 9;
+      margin: 0 auto;
+    }
+
+    .point-card-img {
+      min-height: 220px;
+      max-height: 280px;
+    }
+
+    .point-card-btn {
+      position: static;
+      transform: none;
+      width: auto;
+      max-width: max-content;
+      justify-content: center;
+      padding: 0;
+      min-height: 44px;
+      border-radius: 14px;
+      gap: 8px;
+      margin-top: 2px;
+      font-size: 14px;
+    }
+
+    .point-card-btn--register {
+      flex-wrap: nowrap;
+    }
+
+    .third-card .point-card-btn--register {
+      position: absolute;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 80%;
+      justify-content: center;
+      padding: 0;
+      min-height: 44px;
+      z-index: 9;
+      margin-top: 0;
+    }
+
+    .third-card .point-register-text {
+      font-size: 10px;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .point-card:not(.third-card) .point-card-copy .point-card-btn--free {
+      display: none;
+    }
+
+    .point-card:not(.third-card) .point-card-mobile-cta {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+
+      grid-column: 1 / -1;
+      grid-row: 3;
+    }
+
+    .point-card:not(.third-card) .point-card-mobile-cta .point-card-btn--free {
+      width: 80%;
+      max-width: 80%;
+      min-height: 44px;
+      justify-content: center;
+      padding: 0;
+      margin-top: 0;
+    }
+
+    .point-card-media--first {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding: 0 clamp(8px, 3vw, 16px) clamp(8px, 2.5vw, 16px);
+      min-height: 248px;
+      max-height: 320px;
+      aspect-ratio: auto;
+    }
+
+    .point-card-img--first {
+      position: relative;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      transform: none;
+      width: min(88%, 300px);
+      height: auto;
+      max-height: 100%;
+      margin: 0;
+      object-fit: contain;
+      object-position: center bottom;
+      min-height: unset;
+    }
+
+    .point-card-media--second {
+      position: relative;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    .point-card-media--second picture,
+    .point-card-media--second img {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    .point-card--warm {
+      box-shadow:
+        0 28px 56px rgba(0, 0, 0, 0.55),
+        0 0 80px -20px rgba(255, 83, 15, 0.15);
+    }
+
+    .point-card-img--second {
+      position: absolute;
+      left: 50%;
+      right: auto;
+      bottom: -6px;
+      transform: translateX(-50%);
+      width: 82%;
+      height: 250px;
+      object-fit: contain;
+      object-position: center bottom;
+      min-height: unset;
+      max-height: none;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    .point-card-arrow-hint {
+      position: absolute;
+      bottom: 0;
+      right: 18px;
+      z-index: 10;
+      width: 46px;
     }
   }
 </style>
