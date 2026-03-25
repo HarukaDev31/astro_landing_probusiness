@@ -198,6 +198,7 @@
   .point-section {
     background: var(--color-bg-primary);
     width: 100%;
+    overflow-x: clip;
   }
 
   /* Contenedor principal al 80% del ancho de la vista, centrado */
@@ -210,6 +211,7 @@
     margin-right: auto;
     padding: 0 clamp(16px, 2vw, 24px);
     box-sizing: border-box;
+    overflow-x: clip;
   }
 
   .point-wrap-deco {
@@ -289,6 +291,7 @@
     gap: clamp(40px, 4vw, 50px);
     width: 100%;
     align-items: stretch;
+    padding-bottom: 5em;
   }
 
   /* Tarjeta no ocupa todo el ancho del contenedor 80% */
@@ -732,7 +735,7 @@
     .point-card--align-start,
     .point-card--align-end {
       width: min(100%, 330px) !important;
-      min-height: 440px;
+      min-height: 370px;
       position: relative;
     }
 
@@ -747,13 +750,13 @@
     }
 
     .point-card-copy {
-      gap: 16px;
-      padding-top: 24px;
-      padding-bottom: 24px;
+      gap: 12px;
+      padding-top: 15px;
+      padding-bottom: 12px;
     }
 
     .third-card {
-      min-height: 440px;
+      min-height: 370px;
       border-radius: 24px !important;
       border: 0.5px solid #fff !important;
 
@@ -761,13 +764,13 @@
       align-items: flex-start;
       /* background image: un poco más arriba del borde inferior del card */
       background-image: url("/images/point-card-3-mobile.png");
-      background-size: 84% auto;
-      background-position: center bottom 32px;
+      background-size: 76% auto;
+      background-position: center bottom 20px;
       background-repeat: no-repeat;
     }
 
     .third-card .point-card-copy {
-      padding-bottom: 236px;
+      padding-bottom: 176px;
     }
 
     .third-card .point-card-quote {
@@ -775,15 +778,15 @@
     }
 
     .point-card-media {
-      min-height: 220px;
-      max-height: 280px;
+      min-height: 165px;
+      max-height: 210px;
       aspect-ratio: 16 / 9;
       margin: 0 auto;
     }
 
     .point-card-img {
-      min-height: 220px;
-      max-height: 280px;
+      min-height: 165px;
+      max-height: 210px;
     }
 
     .point-card-btn {
@@ -851,8 +854,8 @@
       justify-content: center;
       align-items: flex-end;
       padding: 0 clamp(8px, 3vw, 16px) clamp(8px, 2.5vw, 16px);
-      min-height: 248px;
-      max-height: 320px;
+      min-height: 190px;
+      max-height: 240px;
       aspect-ratio: auto;
     }
 
@@ -898,7 +901,7 @@
       bottom: -6px;
       transform: translateX(-50%);
       width: 82%;
-      height: 250px;
+      height: 190px;
       object-fit: contain;
       object-position: center bottom;
       min-height: unset;
