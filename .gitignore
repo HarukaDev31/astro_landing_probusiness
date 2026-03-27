@@ -24,3 +24,6 @@ Thumbs.db
 
 # Astro
 .astro/
+
+# Vídeos locales pesados (opcional: CDN o despliegue manual)
+public/videos/*.mp4

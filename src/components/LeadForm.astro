@@ -1,4 +1,6 @@
 ---
+const leadEndpoint = import.meta.env.PUBLIC_LANDING_CONSOLIDADO_LEAD_ENDPOINT ?? "";
+const leadToken = import.meta.env.PUBLIC_LANDING_CONSOLIDADO_FORM_TOKEN ?? "";
 ---
 
 <section class="lead-form" id="form" aria-labelledby="lead-form-title">
@@ -9,7 +11,9 @@
       Déjanos tus datos y un asesor te contactará para calcular tu importación
     </p>
 
-    <form class="lead-form-form" action="#" method="post" novalidate>
+    <p class="lead-form-feedback" data-lead-feedback role="status" aria-live="polite"></p>
+
+    <form class="lead-form-form" data-lead-form novalidate>
       <div class="lead-form-row">
         <div class="lead-field-box">
           <label for="lead-nombre" class="lead-field-box-label">Nombre Completo</label>
@@ -66,10 +70,105 @@
         </div>
       </div>
 
-      <button type="submit" class="lead-submit">Quiero importar con Pro Business</button>
+      <button type="submit" class="lead-submit" data-lead-submit>
+        Quiero importar con Pro Business
+      </button>
     </form>
   </div>
 </section>
+
+<script define:vars={{ leadEndpoint, leadToken }}>
+  (function () {
+    const form = document.querySelector("[data-lead-form]");
+    const feedback = document.querySelector("[data-lead-feedback]");
+    const submitBtn = document.querySelector("[data-lead-submit]");
+    if (!form || !feedback) return;
+
+    function setFeedback(text, state) {
+      feedback.textContent = text;
+      feedback.dataset.state = state || "";
+    }
+
+    /**
+     * Sin action/method en el <form>: un envío nativo ya no hace POST a "#" (eso recargaba la página).
+     * Siempre preventDefault en submit y enviamos solo con fetch.
+     */
+    async function sendLead() {
+      if (!form.reportValidity()) return;
+
+      if (!leadEndpoint || !leadToken) {
+        setFeedback(
+          "Falta configurar el envío del formulario (variables de entorno en el proyecto).",
+          "error",
+        );
+        return;
+      }
+
+      setFeedback("");
+      if (submitBtn instanceof HTMLButtonElement) {
+        submitBtn.disabled = true;
+        submitBtn.dataset.label = submitBtn.textContent || "";
+        submitBtn.textContent = "Enviando…";
+      }
+
+      const fd = new FormData(form);
+      const body = {
+        nombre: String(fd.get("nombre") || "").trim(),
+        whatsapp: String(fd.get("whatsapp") || "").trim(),
+        proveedor: String(fd.get("proveedor") || "").trim(),
+      };
+
+      try {
+        const res = await fetch(leadEndpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: "Bearer " + leadToken,
+          },
+          body: JSON.stringify(body),
+        });
+
+        const data = await res.json().catch(function () {
+          return {};
+        });
+
+        if (res.ok) {
+          setFeedback(
+            data.message ||
+              "¡Listo! Recibimos tus datos; un asesor te contactará pronto.",
+            "ok",
+          );
+          form.reset();
+        } else if (res.status === 422 && data.errors) {
+          const first = Object.values(data.errors)[0];
+          const msg = Array.isArray(first) ? first[0] : String(first);
+          setFeedback(msg || data.message || "Revisa los datos e inténtalo de nuevo.", "error");
+        } else {
+          setFeedback(
+            data.message || "No se pudo enviar. Inténtalo más tarde o escríbenos por WhatsApp.",
+            "error",
+          );
+        }
+      } catch {
+        setFeedback(
+          "Error de red. Comprueba tu conexión o inténtalo más tarde.",
+          "error",
+        );
+      } finally {
+        if (submitBtn instanceof HTMLButtonElement) {
+          submitBtn.disabled = false;
+          if (submitBtn.dataset.label) submitBtn.textContent = submitBtn.dataset.label;
+        }
+      }
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      void sendLead();
+    });
+  })();
+</script>
 
 <style>
   .lead-form {
@@ -102,6 +201,27 @@
     margin: 0 0 20px;
     line-height: 1.08;
     letter-spacing: -0.03em;
+  }
+
+  .lead-form-feedback {
+    font-family: 'Epilogue', var(--font-body), system-ui, sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    text-align: center;
+    margin: 0 0 16px;
+    min-height: 0;
+  }
+
+  .lead-form-feedback:empty {
+    display: none;
+  }
+
+  .lead-form-feedback[data-state="ok"] {
+    color: #7dffb2;
+  }
+
+  .lead-form-feedback[data-state="error"] {
+    color: #ff8a65;
   }
 
   .lead-form-sub {
@@ -248,10 +368,16 @@
     box-shadow: 0 8px 28px rgba(255, 83, 15, 0.35);
   }
 
-  .lead-submit:hover {
+  .lead-submit:hover:not(:disabled) {
     background: #e84403;
     transform: translateY(-2px);
     box-shadow: 0 12px 36px rgba(255, 83, 15, 0.4);
+  }
+
+  .lead-submit:disabled {
+    opacity: 0.75;
+    cursor: wait;
+    transform: none;
   }
 
   .lead-submit:focus-visible {

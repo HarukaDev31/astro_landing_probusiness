@@ -32,20 +32,79 @@
         </p>
       </div>
 
-      <a href="#" class="hm-media" aria-label="Ver video: más de 100 mil proveedores">
-        <img src="/images/aduanaa.jpg" alt="Mercado en China" class="hm-media-img" />
-        <div class="hm-media-shade"></div>
-        <span class="hm-media-play">
-          <svg width="52" height="52" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-        </span>
+      <div
+        class="hm-media"
+        data-hm-media
+        role="region"
+        aria-label="Video: más de 100 mil proveedores"
+      >
+        <video
+          class="hm-media-video"
+          controls
+          playsinline
+          webkit-playsinline
+          preload="none"
+          aria-label="Video: mercado y proveedores en China"
+          width="1920"
+          height="1080"
+        >
+          <source src="/videos/LANDING_CC_web_1080p.mp4" type="video/mp4" />
+        </video>
+        <div class="hm-media-shade" aria-hidden="true"></div>
+        <div class="hm-media-preview" data-hm-media-preview>
+          <button
+            type="button"
+            class="hm-media-play-btn"
+            data-hm-media-play
+            aria-label="Reproducir video"
+          >
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+              <path d="M8 5v14l11-7z"></path>
+            </svg>
+          </button>
+        </div>
         <div class="hm-media-badge">
           <span class="hm-media-badge-top">+100 mil</span>
           <span class="hm-media-badge-bottom">proveedores</span>
         </div>
-      </a>
+      </div>
     </div>
   </div>
 </section>
+
+<script>
+  document.querySelectorAll("[data-hm-media]").forEach((root) => {
+    const preview = root.querySelector("[data-hm-media-preview]");
+    const video = root.querySelector(".hm-media-video");
+    if (!(preview instanceof HTMLElement) || !(video instanceof HTMLVideoElement))
+      return;
+
+    const reveal = () => {
+      preview.hidden = true;
+      root.classList.add("hm-media--playing");
+    };
+
+    preview.addEventListener("click", async () => {
+      if (preview.hidden) return;
+      reveal();
+      try {
+        await video.play();
+      } catch {
+        preview.hidden = false;
+        root.classList.remove("hm-media--playing");
+      }
+    });
+
+    video.addEventListener("play", () => {
+      reveal();
+    });
+
+    video.addEventListener("ended", () => {
+      preview.hidden = false;
+      root.classList.remove("hm-media--playing");
+    });
+  });
+</script>
 
 <style>
   .hero-msg {
@@ -181,9 +240,9 @@
     border-radius: clamp(22px, 3vw, 32px);
     overflow: hidden;
     aspect-ratio: 16 / 10;
-    text-decoration: none;
     color: inherit;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    background: #000;
   }
 
   @media (min-width: 900px) {
@@ -192,35 +251,82 @@
     }
   }
 
-  .hm-media-img {
+  .hm-media-video {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center 40%;
+    display: block;
   }
 
   .hm-media-shade {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.28);
+    z-index: 1;
     pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.15) 0%,
+      transparent 40%,
+      transparent 58%,
+      rgba(0, 0, 0, 0.55) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
   }
 
-  .hm-media-play {
+  .hm-media--playing .hm-media-shade {
+    opacity: 1;
+  }
+
+  .hm-media-preview {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: clamp(72px, 14vw, 96px);
-    height: clamp(72px, 14vw, 96px);
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(10px);
+    inset: 0;
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: #000;
+    cursor: pointer;
+  }
+
+  .hm-media-preview[hidden] {
+    display: none;
+  }
+
+  .hm-media-play-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(72px, 14vw, 96px);
+    height: clamp(72px, 14vw, 96px);
+    padding: 0;
+    margin: 0;
     border: 1px solid rgba(255, 255, 255, 0.4);
-    pointer-events: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    cursor: pointer;
+    transition:
+      transform 0.2s ease,
+      background 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .hm-media-play-btn:hover {
+    transform: scale(1.06);
+    background: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  }
+
+  .hm-media-play-btn:focus-visible {
+    outline: 2px solid #ff5410;
+    outline-offset: 4px;
   }
 
   /* Badge esquina inferior derecha (mock Figma) */
@@ -229,6 +335,7 @@
     right: clamp(16px, 4vw, 36px);
     bottom: clamp(18px, 4vw, 32px);
     top: auto;
+    z-index: 3;
     transform: none;
     display: flex;
     flex-direction: column;
@@ -280,7 +387,8 @@
 
     .hm-media-badge {
       right: 16px;
-      bottom: 18px;
+      /* Un poco más arriba para no tapar la barra de controles del video en móvil */
+      bottom: clamp(52px, 16vw, 72px);
     }
   }
 
@@ -297,7 +405,9 @@
     .hm-title-line--cta-row {
       gap: 8px 12px;
     }
-  }.hm-lead-regular {
+  }
+
+  .hm-lead-regular {
     font-weight: 300;
   }
 </style>

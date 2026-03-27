@@ -1,16 +1,28 @@
 ---
-/** Carrusel de videos “Casos de éxito” — layout claro + puntos funcionales */
+/**
+ * Carrusel “Casos de éxito” — TikTok player/v1 (más limpio que embed/v2).
+ * El formulario de leads (POST al back) está en LeadForm.astro.
+ * La API de TikTok no permite ocultar likes/comentarios por URL; si siguen
+ * apareciendo, la alternativa es hospedar MP4 propios con <video>.
+ */
+function tikTokVideoId(href: string): string {
+  const m = href.match(/\/video\/(\d+)/);
+  return m?.[1] ?? "";
+}
+
 const videoCases = [
-  { title: "Jhonny — Racks para TV", thumb: "/images/aduanaa.jpg" },
-  { title: "María — Ropa deportiva", thumb: "/images/resource-1.jpg" },
-  { title: "Carlos — Electrónicos", thumb: "/images/camion.jpg" },
-  { title: "Cliente testimonio", thumb: "/images/probbd.png" },
-  { title: "Importador consolidado", thumb: "/images/logisticweb.png" },
+  { href: "https://www.tiktok.com/@pro_business_impo/video/7573862255759002892" },
+  { href: "https://www.tiktok.com/@pro_business_impo/video/7589488343231073592" },
+  { href: "https://www.tiktok.com/@pro_business_impo/video/7558631582156754187" },
+  { href: "https://www.tiktok.com/@pro_business_impo/video/7621708070598626561" },
+  { href: "https://www.tiktok.com/@pro_business_impo/video/7599820210345889045" },
+  { href: "https://www.tiktok.com/@pro_business_impo/video/7567580877408996629" },
+  { href: "https://www.tiktok.com/@pro_business_impo/video/7545278265087331592" },
 ];
 
 const testimonials = [
   {
-    name: "Jhonny – Racks para TV",
+    name: "Jonny – Racks para TV",
     label: "CASO DE ÉXITO",
     stars: 5,
     text: "Importé racks para TV con Pro Business y fue una experiencia increíble. El proceso fue muy claro desde el inicio y llegué a tiempo a mi fecha clave.",
@@ -115,34 +127,56 @@ const testimonials = [
       >
         {
           videoCases.map((v, i) => (
-            <a
-              href="#"
+            <div
               class="t-slide"
-              aria-label={`Ver caso: ${v.title}`}
               data-t-slide
               data-t-slide-index={i}
+              data-tiktok-id={tikTokVideoId(v.href)}
+              data-tiktok-url={v.href}
             >
               <div class="t-slide-frame">
-                <img
-                  src={v.thumb}
-                  alt=""
-                  class="t-slide-img"
-                  loading="lazy"
-                  width="360"
-                  height="640"
-                />
-                <div class="t-slide-overlay" />
-                <span class="t-slide-play" aria-hidden="true">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </span>
+                <div class="t-slide-poster">
+                  <span class="t-slide-play" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </span>
+                  <button
+                    type="button"
+                    class="t-slide-activate"
+                    aria-label={`Reproducir caso de éxito aquí, vídeo ${i + 1} de ${videoCases.length}`}
+                  />
+                </div>
+                <div class="t-slide-embed" hidden>
+                  <button
+                    type="button"
+                    class="t-slide-collapse"
+                    aria-label="Cerrar vídeo y volver a la vista previa"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                  </button>
+                  <iframe
+                    class="t-tiktok-inline-iframe"
+                    title={`TikTok — caso de éxito ${i + 1}`}
+                    allow="encrypted-media; fullscreen; picture-in-picture"
+                    allowfullscreen
+                  />
+                  <a
+                    class="t-slide-tiktok-link"
+                    href={v.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Abrir en TikTok
+                  </a>
+                </div>
               </div>
               <div class="t-slide-meta">
-                <span class="t-slide-name">{v.title.toUpperCase()}</span>
                 <span class="t-slide-tag">CASO DE ÉXITO</span>
               </div>
-            </a>
+            </div>
           ))
         }
       </div>
@@ -176,6 +210,70 @@ const testimonials = [
   (() => {
     const track = document.getElementById("t-carousel-track");
     const dotsWrap = document.getElementById("t-carousel-dots");
+
+    /** TikTok player/v1 (menos UI que embed/v2). Parámetros: developers.tiktok.com/doc/embed-player */
+    if (track) {
+      const slidesList = () =>
+        Array.from(track.querySelectorAll("[data-t-slide]"));
+
+      function tikTokPlayerUrl(videoId) {
+        const q = new URLSearchParams({
+          music_info: "0",
+          description: "0",
+          rel: "0",
+        });
+        return `https://www.tiktok.com/player/v1/${videoId}?${q.toString()}`;
+      }
+
+      function deactivateTiktokSlide(slide) {
+        if (!(slide instanceof HTMLElement)) return;
+        slide.classList.remove("t-slide--playing");
+        const wrap = slide.querySelector(".t-slide-embed");
+        const iframe = slide.querySelector(".t-tiktok-inline-iframe");
+        if (wrap instanceof HTMLElement) {
+          wrap.hidden = true;
+          wrap.setAttribute("aria-hidden", "true");
+        }
+        if (iframe instanceof HTMLIFrameElement) iframe.removeAttribute("src");
+      }
+
+      function activateTiktokSlide(slide) {
+        if (!(slide instanceof HTMLElement)) return;
+        const id = slide.getAttribute("data-tiktok-id");
+        const iframe = slide.querySelector(".t-tiktok-inline-iframe");
+        const wrap = slide.querySelector(".t-slide-embed");
+        if (!id || !(iframe instanceof HTMLIFrameElement) || !wrap) return;
+        if (!(wrap instanceof HTMLElement)) return;
+
+        slidesList().forEach((s) => {
+          if (s !== slide) deactivateTiktokSlide(s);
+        });
+
+        slide.classList.add("t-slide--playing");
+        wrap.hidden = false;
+        wrap.setAttribute("aria-hidden", "false");
+        iframe.src = tikTokPlayerUrl(id);
+      }
+
+      track.addEventListener("click", (e) => {
+        const tgt = e.target instanceof Element ? e.target : null;
+        if (!tgt) return;
+
+        const collapse = tgt.closest(".t-slide-collapse");
+        if (collapse) {
+          const slide = collapse.closest("[data-t-slide]");
+          if (slide && track.contains(slide)) deactivateTiktokSlide(slide);
+          return;
+        }
+
+        const activator = tgt.closest(".t-slide-activate");
+        if (!activator || !track.contains(activator)) return;
+        const slide = activator.closest("[data-t-slide]");
+        if (!slide || !track.contains(slide)) return;
+        activateTiktokSlide(slide);
+      });
+    }
+
     if (!track || !dotsWrap) return;
 
     const slides = () =>
@@ -491,12 +589,19 @@ const testimonials = [
     min-width: calc(100% - clamp(40px, 12vw, 56px));
     scroll-snap-align: start;
     scroll-snap-stop: normal;
-    text-decoration: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
     color: inherit;
+    text-align: left;
+    cursor: default;
     display: flex;
     flex-direction: column;
     gap: 14px;
     transition: transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .t-slide:hover {
@@ -519,24 +624,101 @@ const testimonials = [
     background: #1a1a1a;
   }
 
-  .t-slide-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center center;
-    display: block;
-    opacity: 0.35;
-    filter: saturate(0.85);
-  }
-
-  .t-slide-overlay {
+  .t-slide-poster {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.2) 0%,
-      rgba(0, 0, 0, 0.75) 100%
-    );
+    z-index: 1;
+    background: #000;
+  }
+
+  .t-slide-activate {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: inherit;
+  }
+
+  .t-slide-activate:focus-visible {
+    outline: 2px solid #ff530f;
+    outline-offset: 2px;
+  }
+
+  .t-slide-embed {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    background: #000;
+    box-sizing: border-box;
+  }
+
+  .t-slide-embed[hidden] {
+    display: none !important;
+  }
+
+  .t-slide-collapse {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 4;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    color: #111;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  }
+
+  .t-slide-collapse:hover {
+    background: #fff;
+  }
+
+  .t-slide-collapse:focus-visible {
+    outline: 2px solid #ff530f;
+    outline-offset: 2px;
+  }
+
+  .t-tiktok-inline-iframe {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 0;
+    border: 0;
+    display: block;
+  }
+
+  .t-slide-tiktok-link {
+    flex-shrink: 0;
+    display: block;
+    text-align: center;
+    padding: 8px 10px 10px;
+    font-family: var(--font-body, "Epilogue", sans-serif);
+    font-size: 12px;
+    font-weight: 600;
+    color: #ff530f;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    background: #0a0a0a;
+  }
+
+  .t-slide-tiktok-link:hover {
+    color: #ff7a45;
+  }
+
+  .t-slide--playing .t-slide-poster {
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .t-slide-play {
@@ -550,10 +732,12 @@ const testimonials = [
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, #9a9a9a 0%, #4a4a4a 45%, #2d2d2d 100%);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.25),
-      0 8px 24px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
   }
 
   .t-slide-play svg {
@@ -566,16 +750,6 @@ const testimonials = [
     flex-direction: column;
     gap: 6px;
     padding: 0 2px;
-  }
-
-  .t-slide-name {
-    font-family: "Sora", var(--font-heading), sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    color: #000;
-    line-height: 1.25;
   }
 
   .t-slide-tag {
@@ -764,19 +938,12 @@ const testimonials = [
       padding: 16px 32px;
     }
 
-    /* Carrusel “peek”: recorte centrado en el marco + texto centrado bajo la foto */
-    .t-slide-img {
-      object-fit: cover;
-      object-position: center center;
-    }
-
     .t-slide-meta {
       align-items: center;
       text-align: center;
       padding-inline: 8px;
     }
 
-    .t-slide-name,
     .t-slide-tag {
       text-align: center;
       max-width: 100%;
