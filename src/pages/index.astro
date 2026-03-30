@@ -1,37 +1,45 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import AnnouncementBar from '../components/AnnouncementBar.astro';
-import Navbar from '../components/Navbar.astro';
-import Hero from '../components/Hero.astro';
-import HeroMessaging from '../components/HeroMessaging.astro';
-import PointSection from '../components/PointSection.astro';
-import HowItWorks from '../components/HowItWorks.astro';
-import Testimonials from '../components/Testimonials.astro';
-import CTASection from '../components/CTASection.astro';
-import LeadForm from '../components/LeadForm.astro';
-import TrustSection from '../components/TrustSection.astro';
-import Footer from '../components/Footer.astro';
+/**
+ * La landing vive bajo /{mes}{año}/ (ej. /mar2026/). La raíz solo redirige
+ * al código de campaña del mes calendario actual (primeras 3 letras del mes en español + año).
+ */
 ---
-
-<Layout>
-  <header class="site-header">
-    <AnnouncementBar />
-    <Navbar />
-  </header>
-  <Hero />
-  <HeroMessaging />
-  <PointSection />
-  <HowItWorks />
-  <Testimonials />
-  <CTASection />
-  <LeadForm />
-  <TrustSection />
-  <Footer />
-</Layout>
-
-<style>
-  .site-header {
-    position: relative;
-    z-index: 110;
-  }
-</style>
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Pro Business</title>
+    <script is:inline>
+      (function () {
+        var months = [
+          "ene",
+          "feb",
+          "mar",
+          "abr",
+          "may",
+          "jun",
+          "jul",
+          "ago",
+          "sep",
+          "oct",
+          "nov",
+          "dic",
+        ];
+        var d = new Date();
+        var code = months[d.getMonth()] + d.getFullYear();
+        var target = "/" + code + "/";
+        var p = location.pathname.replace(/\/$/, "") || "/";
+        if (p === "" || p === "/") {
+          location.replace(target);
+        }
+      })();
+    </script>
+  </head>
+  <body
+    style="margin:0;min-height:100vh;background:#000;color:#888;font-family:system-ui,sans-serif;display:grid;place-items:center;"
+  >
+    <p style="margin:0;font-size:14px;">Cargando…</p>
+  </body>
+</html>

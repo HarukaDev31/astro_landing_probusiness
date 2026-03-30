@@ -1,7 +1,21 @@
-<script setup>
-import { ref } from 'vue';
+<script setup lang="ts">
+import { ref, watch } from 'vue';
 
-const dates = ref(['16 Abril', '30 Abril']);
+const props = withDefaults(defineProps<{ dates?: string[] }>(), {
+  dates: () => ['16 Abril', '30 Abril'],
+});
+
+const dates = ref<string[]>(
+  props.dates && props.dates.length >= 2 ? [...props.dates] : ['16 Abril', '30 Abril'],
+);
+
+watch(
+  () => props.dates,
+  (v) => {
+    if (v && v.length >= 2) dates.value = [...v];
+  },
+  { deep: true },
+);
 
 /** `public/images/check_naranja.png` se sirve en la raíz del sitio */
 const checkFlagSrc = `${import.meta.env.BASE_URL}images/check_naranja.png`;

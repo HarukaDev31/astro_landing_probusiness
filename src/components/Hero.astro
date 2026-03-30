@@ -1,5 +1,12 @@
 ---
 import SoonContainers from "./SoonContainers.vue";
+
+interface Props {
+  /** Etiquetas tipo SoonContainers: día + mes (ej. "16 Abril") */
+  soonDates?: string[];
+}
+
+const { soonDates = ["16 Abril", "30 Abril"] } = Astro.props;
 ---
 
 <section class="hero">
@@ -28,7 +35,7 @@ import SoonContainers from "./SoonContainers.vue";
           <img src="/images/calendarr.png" alt="" class="hero-calendarr hero-calendarr-pos" role="presentation" />
           <img src="/images/palet-desktop.png" alt="" class="hero-palet hero-palet-pos" role="presentation" />
           <div class="hero-dates hero-dates-pos">
-            <SoonContainers client:load />
+            <SoonContainers client:load dates={soonDates} />
           </div>
         </div>
       </div>
@@ -44,8 +51,8 @@ import SoonContainers from "./SoonContainers.vue";
         <img src="/images/salidas.png" alt="" class="hero-mobile-salidas hero-mobile-salidas-pos" />
         <img src="/images/calendarr.png" alt="" class="hero-mobile-cal hero-mobile-cal-pos" role="presentation" />
         <img src="/images/palet-mobile.png" alt="" class="hero-mobile-palet hero-mobile-palet-pos" role="presentation" />
-        <div class="hero-mobile-dates hero-mobile-dates-pos" >
-          <SoonContainers client:load />
+        <div class="hero-mobile-dates hero-mobile-dates-pos">
+          <SoonContainers client:load dates={soonDates} />
         </div>
        
       </div>
