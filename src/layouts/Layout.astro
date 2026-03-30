@@ -2,11 +2,13 @@
 interface Props {
   title?: string;
   description?: string;
+  hideFloatingCta?: boolean;
 }
 
 const {
   title = 'Pro Business – Importa desde China sin complicaciones',
   description = 'Acompañamiento 360 desde el pago al proveedor hasta la entrega en tus manos en Perú. Carga consolidada desde China.',
+  hideFloatingCta = false,
 } = Astro.props;
 ---
 
@@ -28,5 +30,59 @@ const {
   </head>
   <body>
     <slot />
+    {
+      !hideFloatingCta && (
+        <a href="#form" class="floating-form-cta" aria-label="Ir al formulario de cotización">
+          <span class="floating-form-cta__label">Cotizar<br />Ahora</span>
+          <span class="floating-form-cta__icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M2.67672e-05 13C2.67672e-05 5.82029 5.82032 0 13 0C20.1798 0 26 5.82029 26 13C26 20.1796 20.1798 26 13 26C11.0973 26 9.28727 25.5904 7.65578 24.8538C7.52766 24.7959 7.38473 24.7784 7.24703 24.8066L1.56137 25.9735C1.13331 26.0612 0.689768 25.9282 0.380784 25.6192C0.0717999 25.3102 -0.0612812 24.8667 0.0265599 24.4386L1.19337 18.753C1.22164 18.6152 1.20401 18.4724 1.14616 18.3442C0.409592 16.7127 2.67672e-05 14.9027 2.67672e-05 13ZM7.15 11.05C6.07304 11.05 5.2 11.923 5.2 13V13.013C5.2 14.0899 6.07304 14.963 7.15 14.963H7.163C8.23996 14.963 9.113 14.0899 9.113 13.013V13C9.113 11.923 8.23996 11.05 7.163 11.05H7.15ZM13 11.05C11.9231 11.05 11.05 11.923 11.05 13V13.013C11.05 14.0899 11.9231 14.963 13 14.963H13.013C14.0899 14.963 14.963 14.0899 14.963 13.013V13C14.963 11.923 14.0899 11.05 13.013 11.05H13ZM16.9 13C16.9 11.923 17.7731 11.05 18.85 11.05H18.863C19.9399 11.05 20.813 11.923 20.813 13V13.013C20.813 14.0899 19.9399 14.963 18.863 14.963H18.85C17.7731 14.963 16.9 14.0899 16.9 13.013V13Z" fill="white"/>
+            </svg>
+          </span>
+        </a>
+      )
+    }
   </body>
 </html>
+
+<style>
+  .floating-form-cta {
+    position: fixed;
+    right: 14px;
+    bottom: 18px;
+    z-index: 999;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .floating-form-cta__label {
+    font-family: "Epilogue", sans-serif;
+    font-size: 12px;
+    line-height: 1.05;
+    text-align: center;
+    color: #fff;
+
+    text-underline-offset: 2px;
+  }
+
+  .floating-form-cta__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: #ff5410;
+    box-shadow: 0 0 24px rgba(255, 84, 16, 0.7);
+  }
+
+  .floating-form-cta:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+    border-radius: 10px;
+  }
+</style>

@@ -187,6 +187,11 @@ const imgCamionFigma = `${A}/d2c3b3b6-51f0-43b4-84a0-5161bc2f383b`;
     padding: 5em 0;
     
   }
+  @media (max-width: 768px) {
+    .howitworks-bg {
+      padding: 3em 0;
+    }
+  }
 
   .howitworks-wrap {
     width: 80%;
@@ -572,7 +577,7 @@ const imgCamionFigma = `${A}/d2c3b3b6-51f0-43b4-84a0-5161bc2f383b`;
   /* Móvil: contenedor 90%, intro más pequeña, cards en 2 columnas, más padding abajo */
   @media (max-width: 768px) {
     .howitworks-bg {
-      padding-bottom: clamp(56px, 14vw, 96px);
+      padding-bottom: 0;
     }
 
     .howitworks-wrap {
@@ -615,7 +620,8 @@ const imgCamionFigma = `${A}/d2c3b3b6-51f0-43b4-84a0-5161bc2f383b`;
     .step-card {
       width: 100%;
       margin: 0;
-      min-height: 178px;
+      min-height: 240px;
+      max-height: 240px;
       padding: 14px 12px;
       border-radius: 14px;
       background: rgba(255, 247, 244, 0.92);
@@ -723,7 +729,8 @@ const imgCamionFigma = `${A}/d2c3b3b6-51f0-43b4-84a0-5161bc2f383b`;
     }
 
     .step-card {
-      min-height: 168px;
+      min-height: 240px;
+      max-height: 240px;
       padding: 12px 10px;
     }
   }

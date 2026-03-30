@@ -79,6 +79,9 @@ const leadToken = import.meta.env.PUBLIC_LANDING_CONSOLIDADO_FORM_TOKEN ?? "";
 
 <script define:vars={{ leadEndpoint, leadToken }}>
   (function () {
+    const SUCCESS_FLAG_KEY = "leadFormConfirmed";
+    const SUCCESS_AT_KEY = "leadFormConfirmedAt";
+    const SUCCESS_REDIRECT_PATH = "/gracias";
     const form = document.querySelector("[data-lead-form]");
     const feedback = document.querySelector("[data-lead-feedback]");
     const submitBtn = document.querySelector("[data-lead-submit]");
@@ -134,12 +137,10 @@ const leadToken = import.meta.env.PUBLIC_LANDING_CONSOLIDADO_FORM_TOKEN ?? "";
         });
 
         if (res.ok) {
-          setFeedback(
-            data.message ||
-              "¡Listo! Recibimos tus datos; un asesor te contactará pronto.",
-            "ok",
-          );
+          sessionStorage.setItem(SUCCESS_FLAG_KEY, "1");
+          sessionStorage.setItem(SUCCESS_AT_KEY, String(Date.now()));
           form.reset();
+          window.location.assign(SUCCESS_REDIRECT_PATH);
         } else if (res.status === 422 && data.errors) {
           const first = Object.values(data.errors)[0];
           const msg = Array.isArray(first) ? first[0] : String(first);
@@ -289,6 +290,18 @@ const leadToken = import.meta.env.PUBLIC_LANDING_CONSOLIDADO_FORM_TOKEN ?? "";
 
   .lead-field-box-input::placeholder {
     color: #9b9b9b;
+  }
+
+  /* Evita el fondo claro de autofill del navegador */
+  .lead-field-box-input:-webkit-autofill,
+  .lead-field-box-input:-webkit-autofill:hover,
+  .lead-field-box-input:-webkit-autofill:focus,
+  .lead-field-box-input:-webkit-autofill:active {
+    -webkit-text-fill-color: #fff;
+    caret-color: #fff;
+    box-shadow: 0 0 0 1000px #2a2a2a inset;
+    -webkit-box-shadow: 0 0 0 1000px #2a2a2a inset;
+    transition: background-color 9999s ease-in-out 0s;
   }
 
   .lead-field-block {

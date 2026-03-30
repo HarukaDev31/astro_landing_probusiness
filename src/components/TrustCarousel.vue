@@ -1,12 +1,11 @@
 <script setup lang="ts">
 /**
- * Carrusel “Trust” (pasos): activo grande + título, resto escalonado (~72% cascada),
- * ventana 3 visibles + peek, orden circular (el activo siempre primero; tras el último siguen los primeros),
- * scroll + dots + teclado infinito.
- * Animaciones de entrada: anime.js (createTimeline), no keyframes CSS.
+ * Carrusel "Trust" (pasos): activo grande + título, resto escalonado (~72% cascada),
+ * orden circular (el activo siempre primero), dots + teclado + swipe infinito.
+ * Navegación 100 % programática (overflow:hidden) — sin scroll sync, sin jumps, sin pausa.
  */
-import { ref, watch, computed, onMounted, onBeforeUnmount, nextTick, useTemplateRef } from 'vue';
-import { useScroll, onKeyDown } from '@vueuse/core';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, useTemplateRef } from 'vue';
+import { onKeyDown } from '@vueuse/core';
 import { createTimeline, type Timeline } from 'animejs';
 
 export interface TrustSlide {
@@ -25,12 +24,11 @@ const props = defineProps<{
 }>();
 
 const trackId = `trust-track-${Math.random().toString(36).slice(2, 9)}`;
-/** Única referencia al DOM: el scroll horizontal no se puede hacer 100 % declarativo sin un elemento. */
 const track = useTemplateRef<HTMLElement>('track');
 
 const activeIdx = ref(0);
 
-/** Orden circular: primero el activo, luego los siguientes y al final los que “dan la vuelta”. */
+/** Orden circular: primero el activo, luego los siguientes y al final los que "dan la vuelta". */
 const orderedSlides = computed(() => {
   const n = props.slides.length;
   const a = activeIdx.value;
@@ -45,14 +43,8 @@ const activeSlide = computed(() => {
   if (n === 0) return null;
   return props.slides[activeIdx.value % n] ?? null;
 });
-const navPendingIndex = ref<number | null>(null);
 
-let navLockTimer: ReturnType<typeof setTimeout> | null = null;
 let enterTimeline: Timeline | null = null;
-/** Tras goTo: no pisar la sincronización al soltar scroll unos ms (scroll instant + medición). */
-let suppressScrollSyncUntil = 0;
-/** Un frame sin transición de anchos para medir bien y evitar “layout + smooth scroll” a la vez (tosco). */
-const snapLayout = ref(false);
 
 function prefersReducedMotion(): boolean {
   if (typeof window === 'undefined') return false;
@@ -62,6 +54,12 @@ function prefersReducedMotion(): boolean {
 function stopEnterAnimations() {
   enterTimeline?.revert();
   enterTimeline = null;
+}
+
+function getSlideEls(): HTMLElement[] {
+  const t = track.value;
+  if (!t) return [];
+  return Array.from(t.querySelectorAll<HTMLElement>('[data-trust-slide]'));
 }
 
 function runEnterAnimations() {
@@ -88,47 +86,16 @@ function runEnterAnimations() {
         },
       });
 
-      /*
-       * Entrada escalonada: imagen primero (peso visual), badge, luego texto.
-       * Opacidad + scale suaves; overshoot leve en foto; badge sin outBack tan seco.
-       */
-      tl.add(
-        visual,
-        {
-          opacity: [0.93, 1],
-          scale: [0.92, 1.012, 1],
-          duration: 600,
-          ease: 'out(3)',
-        },
-        0,
-      );
+      tl.add(visual, { opacity: [0.93, 1], scale: [0.92, 1.012, 1], duration: 600, ease: 'out(3)' }, 0);
 
       if (badge) {
         tl.add(badge, { opacity: 0, scale: 0.84, duration: 0 }, 0);
-        tl.add(
-          badge,
-          {
-            opacity: [0, 1],
-            scale: [0.84, 1.06, 1],
-            duration: 500,
-            ease: 'out(2.2)',
-          },
-          68,
-        );
+        tl.add(badge, { opacity: [0, 1], scale: [0.84, 1.06, 1], duration: 500, ease: 'out(2.2)' }, 68);
       }
 
       if (caption) {
         tl.add(caption, { opacity: 0, y: 11, duration: 0 }, 0);
-        tl.add(
-          caption,
-          {
-            opacity: [0, 1],
-            y: [11, 0],
-            duration: 420,
-            ease: 'outQuart',
-          },
-          132,
-        );
+        tl.add(caption, { opacity: [0, 1], y: [11, 0], duration: 420, ease: 'outQuart' }, 132);
       }
 
       enterTimeline = tl;
@@ -141,52 +108,6 @@ function slideAria(s: TrustSlide): string {
   return `Paso ${s.step}: ${s.labelBefore}${s.labelBold}${s.labelAfter}`.replace(/\s+/g, ' ').trim();
 }
 
-function getSlideEls(): HTMLElement[] {
-  const t = track.value;
-  if (!t) return [];
-  return Array.from(t.querySelectorAll<HTMLElement>('[data-trust-slide]'));
-}
-
-function contentX(slide: HTMLElement, container: HTMLElement): number {
-  return container.scrollLeft + slide.getBoundingClientRect().left - container.getBoundingClientRect().left;
-}
-
-/** Índice en el DOM (0 = primero = slide activo lógico antes de reordenar). */
-function domIndexFromScroll(): number {
-  const list = getSlideEls();
-  const el = track.value;
-  if (!list.length || !el) return 0;
-
-  const sl = el.scrollLeft;
-  let best = 0;
-  let bestDist = Infinity;
-  list.forEach((slide, i) => {
-    const cx = contentX(slide, el);
-    const d = Math.abs(cx - sl);
-    if (d < bestDist) {
-      bestDist = d;
-      best = i;
-    }
-  });
-  return best;
-}
-
-function clearNavTimer() {
-  if (navLockTimer != null) {
-    window.clearTimeout(navLockTimer);
-    navLockTimer = null;
-  }
-}
-
-function resolvePendingNav() {
-  clearNavTimer();
-  const pending = navPendingIndex.value;
-  if (pending === null) return;
-  navPendingIndex.value = null;
-  activeIdx.value = pending;
-  suppressScrollSyncUntil = performance.now() + 380;
-}
-
 function onImgError(s: TrustSlide, e: Event) {
   const img = e.target;
   if (!(img instanceof HTMLImageElement)) return;
@@ -194,131 +115,100 @@ function onImgError(s: TrustSlide, e: Event) {
   img.src = s.fallback;
 }
 
-/** Arrastre / gesto: permitir sincronizar al soltar de inmediato. */
-function onTrackPointerDown() {
-  suppressScrollSyncUntil = 0;
+// ─── Swipe via pointer events ───────────────────────────────────────────────
+// Usamos pointer events (no touch/scroll) para detectar swipe en ambas direcciones.
+// Con overflow:hidden no hay scroll que intercepte el gesto.
+
+let swipePointerId: number | null = null;
+let swipeStartX = 0;
+let swipeStartY = 0;
+/** Si pointermove indica gesto vertical dominante, cancelar swipe horizontal. */
+let swipeAborted = false;
+
+function onTrackPointerDown(e: PointerEvent) {
+  if (swipePointerId !== null) return;
+  swipePointerId = e.pointerId;
+  swipeStartX = e.clientX;
+  swipeStartY = e.clientY;
+  swipeAborted = false;
+  // Capturar el puntero para recibir pointerup aunque salga del elemento
+  try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); } catch { /* noop */ }
 }
 
-/** Tap / clic en una tarjeta lateral: llevar ese paso al frente (sin confundir con arrastre). */
-const slidePointerDown = ref<{
-  x: number;
-  y: number;
-  pid: number;
-  sourceIndex: number;
-  domIndex: number;
-} | null>(null);
+function onTrackPointerMove(e: PointerEvent) {
+  if (e.pointerId !== swipePointerId || swipeAborted) return;
+  const dx = Math.abs(e.clientX - swipeStartX);
+  const dy = Math.abs(e.clientY - swipeStartY);
+  // Si el movimiento vertical supera al horizontal antes de los 12px, abortar
+  if (dy > dx && dy > 8) swipeAborted = true;
+}
+
+function onTrackPointerUp(e: PointerEvent) {
+  if (e.pointerId !== swipePointerId) return;
+  const pid = swipePointerId;
+  swipePointerId = null;
+
+  if (swipeAborted) return;
+
+  const dx = e.clientX - swipeStartX;
+  const dy = e.clientY - swipeStartY;
+
+  // Requiere componente horizontal dominante y al menos 36px de desplazamiento
+  if (Math.abs(dx) < 36 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+
+  const n = props.slides.length;
+  if (!n) return;
+
+  try { (e.currentTarget as HTMLElement).releasePointerCapture(pid); } catch { /* noop */ }
+
+  if (dx < 0) goTo((activeIdx.value + 1) % n);       // swipe izquierda → siguiente
+  else        goTo((activeIdx.value - 1 + n) % n);   // swipe derecha  → anterior
+}
+
+function onTrackPointerCancel(e: PointerEvent) {
+  if (e.pointerId === swipePointerId) {
+    swipePointerId = null;
+    swipeAborted = true;
+  }
+}
+
+// ─── Tap en tarjeta inactiva ─────────────────────────────────────────────────
+let tapPid: number | null = null;
+let tapStartX = 0;
+let tapStartY = 0;
+let tapSourceIdx = -1;
+let tapDomIdx = -1;
 
 function onSlidePointerDown(e: PointerEvent, sourceIndex: number, domIndex: number) {
+  if (domIndex === 0) return; // la activa no necesita tap
   if (e.button !== 0 && e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
-  slidePointerDown.value = {
-    x: e.clientX,
-    y: e.clientY,
-    pid: e.pointerId,
-    sourceIndex,
-    domIndex,
-  };
+  tapPid = e.pointerId;
+  tapStartX = e.clientX;
+  tapStartY = e.clientY;
+  tapSourceIdx = sourceIndex;
+  tapDomIdx = domIndex;
 }
 
 function onSlidePointerUp(e: PointerEvent, sourceIndex: number, domIndex: number) {
-  const start = slidePointerDown.value;
-  if (!start || start.pid !== e.pointerId) return;
-  slidePointerDown.value = null;
-  if (start.sourceIndex !== sourceIndex || start.domIndex !== domIndex) return;
-  if (domIndex === 0) return;
-  const dx = Math.abs(e.clientX - start.x);
-  const dy = Math.abs(e.clientY - start.y);
-  if (dx > 16 || dy > 16) return;
+  if (e.pointerId !== tapPid || domIndex !== tapDomIdx) { tapPid = null; return; }
+  tapPid = null;
+  if (Math.abs(e.clientX - tapStartX) > 16 || Math.abs(e.clientY - tapStartY) > 16) return;
   goTo(sourceIndex);
 }
 
 function onSlidePointerCancel(e: PointerEvent) {
-  const start = slidePointerDown.value;
-  if (start && start.pid === e.pointerId) slidePointerDown.value = null;
+  if (e.pointerId === tapPid) tapPid = null;
 }
 
-/**
- * Al terminar el scroll: no reordenar durante el arrastre (solo aquí).
- * El índice DOM `d` sumado al activo da el slide lógico en bucle.
- */
-function syncActiveAfterScrollStop() {
-  if (navPendingIndex.value != null) return;
-  if (typeof performance !== 'undefined' && performance.now() < suppressScrollSyncUntil) return;
-
-  const el = track.value;
-  if (!el) return;
-  const n = props.slides.length;
-  if (n === 0) return;
-
-  const d = domIndexFromScroll();
-  const L = (activeIdx.value + d) % n;
-
-  if (L !== activeIdx.value) {
-    activeIdx.value = L;
-    return;
-  }
-
-  if (el.scrollLeft !== 0) {
-    snapLayout.value = true;
-    requestAnimationFrame(() => {
-      el.scrollTo({ left: 0, behavior: 'instant' });
-      snapLayout.value = false;
-    });
-  }
-}
-
-function onTrackScrollStop() {
-  resolvePendingNav();
-  syncActiveAfterScrollStop();
-}
-
-watch(activeIdx, (next, prev) => {
-  if (prev != null && prev >= 0 && next !== prev) {
-    runEnterAnimations();
-  }
-  void nextTick(() => {
-    requestAnimationFrame(() => {
-      const el = track.value;
-      if (!el || el.scrollLeft === 0) return;
-      snapLayout.value = true;
-      requestAnimationFrame(() => {
-        el.scrollTo({ left: 0, behavior: 'instant' });
-        snapLayout.value = false;
-      });
-    });
-  });
-});
-
-/** idle: tras arrastre, onStop alinea índice y scroll (el activo sigue primero). */
-useScroll(track, {
-  throttle: 32,
-  idle: 280,
-  onStop: onTrackScrollStop,
-});
-
-let stopKeyNav: (() => void) | undefined;
-
+// ─── Navegación ──────────────────────────────────────────────────────────────
 function goTo(i: number) {
   const n = props.slides.length;
-  if (i < 0 || i >= n) return;
-  if (i === activeIdx.value && navPendingIndex.value === null) return;
-
+  if (i < 0 || i >= n || i === activeIdx.value) return;
   activeIdx.value = i;
-  navPendingIndex.value = i;
-  suppressScrollSyncUntil = performance.now() + 400;
-  clearNavTimer();
-  snapLayout.value = true;
-
-  void nextTick(() => {
-    requestAnimationFrame(() => {
-      const el = track.value;
-      if (el) el.scrollTo({ left: 0, behavior: 'instant' });
-      snapLayout.value = false;
-      resolvePendingNav();
-    });
-  });
-
-  navLockTimer = window.setTimeout(() => resolvePendingNav(), 450);
+  runEnterAnimations();
 }
+
+let stopKeyNav: (() => void) | undefined;
 
 onMounted(() => {
   stopKeyNav = onKeyDown(
@@ -330,14 +220,13 @@ onMounted(() => {
       e.preventDefault();
       const cur = activeIdx.value;
       if (e.key === 'ArrowRight') goTo((cur + 1) % n);
-      else goTo((cur - 1 + n) % n);
+      else                        goTo((cur - 1 + n) % n);
     },
     { target: document },
   );
 });
 
 onBeforeUnmount(() => {
-  clearNavTimer();
   stopEnterAnimations();
   stopKeyNav?.();
 });
@@ -376,52 +265,54 @@ onBeforeUnmount(() => {
           :id="trackId"
           ref="track"
           class="trust-carousel"
-          :class="{ 'trust-carousel--snap-layout': snapLayout }"
           tabindex="0"
           role="region"
           aria-label="Etapas del consolidado"
-          @pointerdown.passive="onTrackPointerDown"
+          @pointerdown="onTrackPointerDown"
+          @pointermove="onTrackPointerMove"
+          @pointerup="onTrackPointerUp"
+          @pointercancel="onTrackPointerCancel"
         >
-        <article
-          v-for="(item, j) in orderedSlides"
-          :key="item.slide.step"
-          class="trust-slide"
-          :class="{ 'trust-slide--active': j === 0, 'trust-slide--selectable': j !== 0 }"
-          data-trust-slide
-          :data-trust-tier="String(Math.min(j, 4))"
-          :data-trust-source-index="String(item.sourceIndex)"
-          :aria-label="slideAria(item.slide)"
-          :aria-current="j === 0 ? 'step' : undefined"
-          @pointerdown="onSlidePointerDown($event, item.sourceIndex, j)"
-          @pointerup="onSlidePointerUp($event, item.sourceIndex, j)"
-          @pointercancel="onSlidePointerCancel"
-        >
-          <div class="trust-slide-visual">
-            <img
-              :src="item.slide.figma"
-              alt=""
-              class="trust-slide-img"
-              width="369"
-              height="491"
-              loading="lazy"
-              decoding="async"
-              @error="onImgError(item.slide, $event)"
-            />
-          </div>
-          <div class="trust-slide-meta">
-            <span class="trust-badge" aria-hidden="true">{{ item.slide.step }}</span>
-            <p class="trust-caption">
-              <template v-if="item.slide.plain">{{ item.slide.plain }}</template>
-              <template v-else>
-                {{ item.slide.labelBefore }}
-                <span
-                  class="trust-caption-strong"
-                  :class="{ 'trust-caption-strong--eb': item.slide.boldIsStrong }"
-                >{{ item.slide.labelBold }}</span>{{ item.slide.labelAfter }}
-              </template>
-            </p>
-          </div>
-        </article>
+          <article
+            v-for="(item, j) in orderedSlides"
+            :key="item.slide.step"
+            class="trust-slide"
+            :class="{ 'trust-slide--active': j === 0, 'trust-slide--selectable': j !== 0 }"
+            data-trust-slide
+            :data-trust-tier="String(Math.min(j, 4))"
+            :data-trust-source-index="String(item.sourceIndex)"
+            :aria-label="slideAria(item.slide)"
+            :aria-current="j === 0 ? 'step' : undefined"
+            @pointerdown="onSlidePointerDown($event, item.sourceIndex, j)"
+            @pointerup="onSlidePointerUp($event, item.sourceIndex, j)"
+            @pointercancel="onSlidePointerCancel"
+          >
+            <div class="trust-slide-visual">
+              <img
+                :src="item.slide.figma"
+                alt=""
+                class="trust-slide-img"
+                width="369"
+                height="491"
+                loading="lazy"
+                decoding="async"
+                @error="onImgError(item.slide, $event)"
+              />
+            </div>
+            <div class="trust-slide-meta">
+              <span class="trust-badge" aria-hidden="true">{{ item.slide.step }}</span>
+              <p class="trust-caption">
+                <template v-if="item.slide.plain">{{ item.slide.plain }}</template>
+                <template v-else>
+                  {{ item.slide.labelBefore }}
+                  <span
+                    class="trust-caption-strong"
+                    :class="{ 'trust-caption-strong--eb': item.slide.boldIsStrong }"
+                  >{{ item.slide.labelBold }}</span>{{ item.slide.labelAfter }}
+                </template>
+              </p>
+            </div>
+          </article>
         </div>
       </div>
 
@@ -556,7 +447,6 @@ onBeforeUnmount(() => {
     border: 0;
   }
 
-  /* Mismo inicio horizontal que “Confía en nosotros” (sin centrar en el contenedor). */
   .trust-carousel-wrap {
     position: relative;
     display: flex;
@@ -564,8 +454,7 @@ onBeforeUnmount(() => {
     align-items: stretch;
     width: min(80vw, 100%);
     max-width: 100%;
-    margin-inline: 0;
-    margin:0 auto;
+    margin: 0 auto;
     box-sizing: border-box;
     --trust-ease: cubic-bezier(0.22, 1, 0.36, 1);
     --trust-gap: clamp(12px, 1.8vw, 20px);
@@ -573,7 +462,6 @@ onBeforeUnmount(() => {
     --trust-r2: calc(var(--trust-cascade-ratio) * var(--trust-cascade-ratio));
     --trust-r3: calc(var(--trust-r2) * var(--trust-cascade-ratio));
     --trust-r4: calc(var(--trust-r3) * var(--trust-cascade-ratio));
-    /* Tarjeta activa: más grande según viewport (carrusel ~80vw) */
     --trust-w-lg: clamp(220px, 46vw, 460px);
     --trust-v-active: min(62vh, min(600px, 70vw));
     --trust-peek: clamp(24px, 5.5vw, 48px);
@@ -583,7 +471,6 @@ onBeforeUnmount(() => {
     overflow: hidden;
     width: 100%;
     max-width: 100%;
-    margin-inline: 0;
     /* Aire vertical: sombras y scale en la animación no pegan contra el clip */
     padding-block: clamp(10px, 2vw, 18px);
     box-sizing: border-box;
@@ -593,28 +480,21 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
     gap: var(--trust-gap);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    /* programmatic scroll usa 'instant'; el arrastre sigue siendo nativo */
-    scroll-behavior: auto;
+    /* Sin scroll: la navegación es 100 % programática.
+       Esto evita el race condition scroll-reset ↔ reorder del DOM (jumps + pausa). */
+    overflow: hidden;
+    /* Permitir scroll vertical de página mientras se gestiona horizontal aquí */
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
     padding: 8px 0 12px;
     padding-inline: clamp(4px, 1vw, 8px);
-    scrollbar-width: none;
-    -ms-overflow-style: none;
     outline: none;
+    cursor: grab;
   }
 
-  /* Un frame: anchos/altos al nuevo tier sin interpolar → medición y scroll precisos, menos lag */
-  .trust-carousel--snap-layout .trust-slide {
-    transition: none;
-  }
-
-  .trust-carousel--snap-layout .trust-slide-visual {
-    transition: none;
-  }
-
-  .trust-carousel::-webkit-scrollbar {
-    display: none;
+  .trust-carousel:active {
+    cursor: grabbing;
   }
 
   .trust-slide {
@@ -622,14 +502,13 @@ onBeforeUnmount(() => {
     flex: 0 0 var(--trust-slot);
     width: var(--trust-slot);
     min-width: 0;
-    scroll-snap-align: start;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: clamp(10px, 1.8vw, 16px);
     transition:
-      flex-basis 0.42s var(--trust-ease),
-      width 0.42s var(--trust-ease);
+      flex-basis 0.52s var(--trust-ease),
+      width 0.52s var(--trust-ease);
   }
 
   .trust-slide--selectable {
@@ -658,14 +537,9 @@ onBeforeUnmount(() => {
   }
 
   .trust-slide-visual {
-    /* Fallback sin container queries */
     border-radius: clamp(16px, 4.2vw, 52px);
     overflow: hidden;
     background: #1a1a1a;
-    /*
-     * Evitar recorte con object-fit: cover: si width=100% y aspect-ratio chocan con max-height,
-     * la caja queda “aplastada” y la foto se corta. Limitar ancho al que cabe en max-height (3:4).
-     */
     width: min(100%, calc(var(--trust-v-active) * var(--trust-r4) * 3 / 4));
     margin-inline: auto;
     aspect-ratio: 3 / 4;
@@ -673,12 +547,11 @@ onBeforeUnmount(() => {
     transform-origin: center center;
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
     transition:
-      aspect-ratio 0.42s var(--trust-ease),
-      max-height 0.42s var(--trust-ease),
-      box-shadow 0.45s ease;
+      aspect-ratio 0.52s var(--trust-ease),
+      max-height 0.52s var(--trust-ease),
+      box-shadow 0.55s ease;
   }
 
-  /* Radio exacto ~12.5% del ancho de cada tarjeta (48/369 en Figma) */
   @supports (width: 1cqw) {
     .trust-slide-visual {
       border-radius: clamp(14px, 12.5cqw, 56px);
@@ -689,7 +562,6 @@ onBeforeUnmount(() => {
     will-change: transform;
     aspect-ratio: 369 / 491;
     max-height: var(--trust-v-active);
-    /* Misma lógica: caber en max-height manteniendo 369:491 (Figma) */
     width: min(100%, calc(var(--trust-v-active) * 369 / 491));
     margin-inline: auto;
     transform: scale(1);
@@ -726,7 +598,7 @@ onBeforeUnmount(() => {
     object-position: center;
     display: block;
     filter: grayscale(100%);
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .trust-slide--active:hover .trust-slide-img {

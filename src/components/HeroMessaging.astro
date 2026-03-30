@@ -41,9 +41,11 @@
         <video
           class="hm-media-video"
           controls
+          autoplay
+          loop
           playsinline
           webkit-playsinline
-          preload="none"
+          preload="metadata"
           aria-label="Video: mercado y proveedores en China"
           width="1920"
           height="1080"
@@ -63,10 +65,7 @@
             </svg>
           </button>
         </div>
-        <div class="hm-media-badge">
-          <span class="hm-media-badge-top">+100 mil</span>
-          <span class="hm-media-badge-bottom">proveedores</span>
-        </div>
+    
       </div>
     </div>
   </div>
@@ -84,14 +83,27 @@
       root.classList.add("hm-media--playing");
     };
 
+    const showPreview = () => {
+      preview.hidden = false;
+      root.classList.remove("hm-media--playing");
+    };
+
+    const tryAutoplay = async () => {
+      try {
+        await video.play();
+        reveal();
+      } catch {
+        showPreview();
+      }
+    };
+
     preview.addEventListener("click", async () => {
       if (preview.hidden) return;
       reveal();
       try {
         await video.play();
       } catch {
-        preview.hidden = false;
-        root.classList.remove("hm-media--playing");
+        showPreview();
       }
     });
 
@@ -100,9 +112,10 @@
     });
 
     video.addEventListener("ended", () => {
-      preview.hidden = false;
-      root.classList.remove("hm-media--playing");
+      showPreview();
     });
+
+    void tryAutoplay();
   });
 </script>
 
