@@ -39,8 +39,8 @@ const checkFlagSrc = `${import.meta.env.BASE_URL}images/check_naranja.png`;
         </div>
         <div class="soon-text">
           <!--trim first 2 char on bold orange, rest of text normal orange-->
-          <span style="color: #ff6600; font-weight: bold">{{ item.slice(0, 2) }} </span>
-          <span style="color: #ff6600; font-weight: normal"> {{ item.slice(2) }}</span>
+          <span style="color: black; font-weight: bold">{{ item.slice(0, 2) }} </span>
+          <span style="color: black; font-weight: normal"> {{ item.slice(2) }}</span>
         </div>
       </div>
     </div>

@@ -77,6 +77,7 @@
     const video = root.querySelector(".hm-media-video");
     if (!(preview instanceof HTMLElement) || !(video instanceof HTMLVideoElement))
       return;
+    let hasBoundFirstInteraction = false;
 
     const reveal = () => {
       preview.hidden = true;
@@ -88,12 +89,48 @@
       root.classList.remove("hm-media--playing");
     };
 
+    const bindFirstInteractionForSound = () => {
+      if (hasBoundFirstInteraction) return;
+      hasBoundFirstInteraction = true;
+
+      const activateSound = async () => {
+        video.muted = false;
+        video.defaultMuted = false;
+        video.volume = 1;
+        try {
+          await video.play();
+        } catch {
+          // Si el navegador sigue bloqueando, mantenemos reproducción actual.
+        }
+      };
+
+      const onceOptions = { once: true, passive: true };
+      window.addEventListener("pointerdown", () => {
+        void activateSound();
+      }, onceOptions);
+      window.addEventListener("keydown", () => {
+        void activateSound();
+      }, { once: true });
+    };
+
     const tryAutoplay = async () => {
       try {
+        video.muted = false;
+        video.defaultMuted = false;
+        video.volume = 1;
         await video.play();
         reveal();
       } catch {
-        showPreview();
+        // Fallback compatible con políticas de autoplay (Chrome/Safari/Firefox).
+        try {
+          video.muted = true;
+          video.defaultMuted = true;
+          await video.play();
+          reveal();
+          bindFirstInteractionForSound();
+        } catch {
+          showPreview();
+        }
       }
     };
 
@@ -101,6 +138,9 @@
       if (preview.hidden) return;
       reveal();
       try {
+        video.muted = false;
+        video.defaultMuted = false;
+        video.volume = 1;
         await video.play();
       } catch {
         showPreview();

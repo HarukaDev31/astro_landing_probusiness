@@ -273,6 +273,8 @@ onBeforeUnmount(() => {
           @pointerup="onTrackPointerUp"
           @pointercancel="onTrackPointerCancel"
         >
+          <!-- TransitionGroup FLIP: anima la posición cuando orderedSlides reordena -->
+          <TransitionGroup tag="div" class="trust-slides-row" move-class="trust-slide-move">
           <article
             v-for="(item, j) in orderedSlides"
             :key="item.slide.step"
@@ -313,6 +315,7 @@ onBeforeUnmount(() => {
               </p>
             </div>
           </article>
+          </TransitionGroup>
         </div>
       </div>
 
@@ -477,24 +480,39 @@ onBeforeUnmount(() => {
   }
 
   .trust-carousel {
-    display: flex;
-    align-items: center;
-    gap: var(--trust-gap);
-    /* Sin scroll: la navegación es 100 % programática.
-       Esto evita el race condition scroll-reset ↔ reorder del DOM (jumps + pausa). */
+    /* Contenedor de clip: sin scroll, la navegación es 100 % programática.
+       Evita el race condition scroll-reset ↔ reorder del DOM (jumps + pausa). */
     overflow: hidden;
-    /* Permitir scroll vertical de página mientras se gestiona horizontal aquí */
     touch-action: pan-y;
     user-select: none;
     -webkit-user-select: none;
-    padding: 8px 0 12px;
-    padding-inline: clamp(4px, 1vw, 8px);
     outline: none;
     cursor: grab;
   }
 
   .trust-carousel:active {
     cursor: grabbing;
+  }
+
+  /* El flex real vive aquí: TransitionGroup FLIP anima el translateX entre reordenes */
+  .trust-slides-row {
+    display: flex;
+    /* flex-start: todos comparten el mismo borde superior.
+       Con align-items:center el FLIP calcula un dy ≠ 0 al cambiar el tamaño de las tarjetas.
+       Con flex-start el top siempre es el mismo → FLIP solo produce translateX (sin movimiento Y). */
+    align-items: flex-start;
+    gap: var(--trust-gap);
+    padding: 8px 0 12px;
+    padding-inline: clamp(4px, 1vw, 8px);
+  }
+
+  /* FLIP: Vue aplica translateX inverso antes de la transición → deslizamiento horizontal suave.
+     Incluir flex-basis y width para que el tamaño también anime junto con la posición. */
+  .trust-slide-move {
+    transition:
+      transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+      flex-basis 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+      width 0.52s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .trust-slide {

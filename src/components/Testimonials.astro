@@ -215,12 +215,17 @@ const testimonials = [
     if (track) {
       const slidesList = () =>
         Array.from(track.querySelectorAll("[data-t-slide]"));
+      const isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
       function tikTokPlayerUrl(videoId) {
         const q = new URLSearchParams({
           music_info: "0",
           description: "0",
           rel: "0",
+          autoplay: "1",
+          playsinline: "1",
         });
         return `https://www.tiktok.com/player/v1/${videoId}?${q.toString()}`;
       }
@@ -240,10 +245,16 @@ const testimonials = [
       function activateTiktokSlide(slide) {
         if (!(slide instanceof HTMLElement)) return;
         const id = slide.getAttribute("data-tiktok-id");
+        const externalUrl = slide.getAttribute("data-tiktok-url");
         const iframe = slide.querySelector(".t-tiktok-inline-iframe");
         const wrap = slide.querySelector(".t-slide-embed");
         if (!id || !(iframe instanceof HTMLIFrameElement) || !wrap) return;
         if (!(wrap instanceof HTMLElement)) return;
+
+        if (isIOS && externalUrl) {
+          window.open(externalUrl, "_blank", "noopener,noreferrer");
+          return;
+        }
 
         slidesList().forEach((s) => {
           if (s !== slide) deactivateTiktokSlide(s);

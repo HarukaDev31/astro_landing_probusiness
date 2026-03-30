@@ -26,6 +26,7 @@ import SoonContainers from "./SoonContainers.vue";
             role="presentation"
           />
           <img src="/images/calendarr.png" alt="" class="hero-calendarr hero-calendarr-pos" role="presentation" />
+          <img src="/images/palet-desktop.png" alt="" class="hero-palet hero-palet-pos" role="presentation" />
           <div class="hero-dates hero-dates-pos">
             <SoonContainers client:load />
           </div>
@@ -42,7 +43,8 @@ import SoonContainers from "./SoonContainers.vue";
         <img src="/images/narnajonn.png" alt="" class="hero-mobile-box hero-mobile-box-pos" role="presentation" />
         <img src="/images/salidas.png" alt="" class="hero-mobile-salidas hero-mobile-salidas-pos" />
         <img src="/images/calendarr.png" alt="" class="hero-mobile-cal hero-mobile-cal-pos" role="presentation" />
-        <div class="hero-mobile-dates hero-mobile-dates-pos">
+        <img src="/images/palet-mobile.png" alt="" class="hero-mobile-palet hero-mobile-palet-pos" role="presentation" />
+        <div class="hero-mobile-dates hero-mobile-dates-pos" >
           <SoonContainers client:load />
         </div>
        
@@ -194,7 +196,7 @@ import SoonContainers from "./SoonContainers.vue";
 
   .hero-probbd-pos {
     position: absolute;
-    left: 18%;
+    right: -20%;
     bottom: calc(-20px * var(--hero-stage-scale));
   }
 
@@ -212,6 +214,19 @@ import SoonContainers from "./SoonContainers.vue";
     bottom: calc(-50px * var(--hero-stage-scale));
   }
 
+  .hero-palet {
+    width: 60%;
+    max-width: none;
+    z-index: 2;
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+  }
+
+  .hero-palet-pos {
+    position: absolute;
+    left: 5%;
+    bottom: calc(-50px * var(--hero-stage-scale));
+  }
+
   .hero-calendarr {
     width: 22%;
     max-width: none;
@@ -221,8 +236,8 @@ import SoonContainers from "./SoonContainers.vue";
 
   .hero-calendarr-pos {
     position: absolute;
-    top: 5%;
-    right: 2%;
+    top: -25%;
+    left: 30%;
   }
 
   .hero-dates {
@@ -231,8 +246,8 @@ import SoonContainers from "./SoonContainers.vue";
 
   .hero-dates-pos {
     position: absolute;
-    right: -14%;
-    top: 50%;
+    left: 30%;
+    top: 20%;
     transform: translateY(-50%) scale(calc(0.78 * var(--hero-stage-scale)));
     transform-origin: right center;
   }
@@ -305,7 +320,7 @@ import SoonContainers from "./SoonContainers.vue";
   }
 
   .hero-mobile-probbd {
-    width: 58%;
+    width: 48%;
     max-width: 320px;
     margin: 0 auto;
     z-index: 3;
@@ -316,8 +331,22 @@ import SoonContainers from "./SoonContainers.vue";
   .hero-mobile-probbd-pos {
     position: absolute;
     left: 0%;
-    right: -30%;
-    bottom: 20%;
+    right: -54%;
+    bottom: 35%;
+  }
+
+  .hero-mobile-palet {
+    width: 50%;
+    max-width: none;
+    z-index: 2;
+    object-fit: contain;
+    filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.5));
+  }
+
+  .hero-mobile-palet-pos {
+    position: absolute;
+    left: 10%;
+    bottom: 24%;
   }
 
   .hero-mobile-box {
@@ -334,7 +363,7 @@ import SoonContainers from "./SoonContainers.vue";
   }
 
   .hero-mobile-salidas {
-    width: 62%;
+    width: 50%;
     max-width: 248px;
     z-index: 2;
     filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.45));
@@ -347,15 +376,15 @@ import SoonContainers from "./SoonContainers.vue";
   }
 
   .hero-mobile-cal {
-    width: 26%;
-    z-index: 6;
+    width: 24%;
+    z-index: 5;
     object-fit: contain;
   }
 
   .hero-mobile-cal-pos {
     position: absolute;
-    right:11.5%;
-    top: 5.5%;
+    left:40%;
+    top: 6%;
   }
 
   .hero-mobile-dates {
@@ -364,8 +393,8 @@ import SoonContainers from "./SoonContainers.vue";
 
   .hero-mobile-dates-pos {
     position: absolute;
-    left: 8%;
-    top:10%;
+    left: 0%;
+    top:8%;
     transform: scale(0.42);
     transform-origin: right center;
   }
