@@ -83,7 +83,11 @@ body {
   margin: 0 auto;
   padding: 0 24px;
 }
-
+@media (max-width: 768px) {
+  .container {
+    padding: 0px;
+  }
+}
 img {
   max-width: 100%;
   height: auto;

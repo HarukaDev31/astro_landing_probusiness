@@ -136,6 +136,14 @@ const testimonials = [
             >
               <div class="t-slide-frame">
                 <div class="t-slide-poster">
+                  <img
+                    class="t-slide-poster-img"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width="360"
+                    height="640"
+                  />
                   <span class="t-slide-play" aria-hidden="true">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
                       <path d="M8 5v14l11-7z" />
@@ -160,17 +168,9 @@ const testimonials = [
                   <iframe
                     class="t-tiktok-inline-iframe"
                     title={`TikTok — caso de éxito ${i + 1}`}
-                    allow="encrypted-media; fullscreen; picture-in-picture"
+                    allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
                     allowfullscreen
                   />
-                  <a
-                    class="t-slide-tiktok-link"
-                    href={v.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Abrir en TikTok
-                  </a>
                 </div>
               </div>
               <div class="t-slide-meta">
@@ -215,20 +215,145 @@ const testimonials = [
     if (track) {
       const slidesList = () =>
         Array.from(track.querySelectorAll("[data-t-slide]"));
-      const isIOS =
-        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-      function tikTokPlayerUrl(videoId) {
+      /** Miniatura del vídeo (oEmbed público; evita poster negro sin imagen). */
+      async function resolveTikTokThumbnailUrl(videoUrl) {
+        try {
+          const r = await fetch(
+            `https://noembed.com/embed?url=${encodeURIComponent(videoUrl)}`,
+          );
+          if (r.ok) {
+            const d = await r.json();
+            const u = d?.thumbnail_url;
+            if (typeof u === "string" && u.length > 0) return u;
+          }
+        } catch {
+          /* siguiente fallback */
+        }
+        try {
+          const r2 = await fetch(
+            `https://api.microlink.io/?url=${encodeURIComponent(videoUrl)}`,
+          );
+          if (r2.ok) {
+            const d2 = await r2.json();
+            const u2 = d2?.data?.image?.url;
+            if (typeof u2 === "string" && u2.length > 0) return u2;
+          }
+        } catch {
+          return null;
+        }
+        return null;
+      }
+
+      function loadPosterThumbnails() {
+        slidesList().forEach((slide) => {
+          if (!(slide instanceof HTMLElement)) return;
+          const url = slide.getAttribute("data-tiktok-url");
+          const img = slide.querySelector(".t-slide-poster-img");
+          if (!url || !(img instanceof HTMLImageElement)) return;
+          void (async () => {
+            const thumb = await resolveTikTokThumbnailUrl(url);
+            if (!thumb) return;
+            img.onload = () => {
+              img.classList.add("t-slide-poster-img--ready");
+            };
+            img.src = thumb;
+          })();
+        });
+      }
+
+      loadPosterThumbnails();
+
+      /**
+       * `autoplay=false` precarga sin reproducir; `true` al dar play.
+       * `muted=0` (doc TikTok): volumen habilitado; el navegador puede forzar mute en autoplay,
+       * por eso además enviamos postMessage `unMute` tras el clic del usuario.
+       */
+      function tikTokPlayerUrl(videoId, autoplay = true) {
         const q = new URLSearchParams({
           music_info: "0",
           description: "0",
           rel: "0",
-          autoplay: "1",
+          autoplay: autoplay ? "1" : "0",
           playsinline: "1",
+          muted: "0",
         });
         return `https://www.tiktok.com/player/v1/${videoId}?${q.toString()}`;
       }
+
+      /** API embed TikTok: host → player (unMute). */
+      function postToTiktokPlayer(iframe, type) {
+        if (!(iframe instanceof HTMLIFrameElement) || !iframe.contentWindow) return;
+        try {
+          iframe.contentWindow.postMessage(
+            { type, "x-tiktok-player": true },
+            "*",
+          );
+        } catch {
+          /* noop */
+        }
+      }
+
+      function requestTiktokUnmute(iframe) {
+        postToTiktokPlayer(iframe, "unMute");
+      }
+
+      /** Tras activar con clic (gesto de usuario), insistir en quitar mute por políticas del iframe. */
+      function wireTiktokSoundAfterUserPlay(iframe) {
+        if (!(iframe instanceof HTMLIFrameElement)) return;
+        const kick = () => {
+          requestTiktokUnmute(iframe);
+        };
+        iframe.addEventListener("load", kick, { once: true });
+        [0, 120, 400, 900, 1600].forEach((ms) => {
+          window.setTimeout(kick, ms);
+        });
+      }
+
+      if (typeof window !== "undefined") {
+        window.addEventListener("message", (event) => {
+          if (typeof event.origin === "string" && !event.origin.includes("tiktok.com"))
+            return;
+          const d = event.data;
+          if (!d || typeof d !== "object" || d["x-tiktok-player"] !== true) return;
+          if (d.type !== "onPlayerReady" && d.type !== "onStateChange") return;
+          const list = track.querySelectorAll(".t-tiktok-inline-iframe");
+          list.forEach((el) => {
+            if (
+              el instanceof HTMLIFrameElement &&
+              el.contentWindow === event.source
+            ) {
+              requestTiktokUnmute(el);
+            }
+          });
+        });
+      }
+
+      /** Precarga embeds en segundo plano (mismo iframe en móvil y desktop). */
+      function preloadTikTokPlayerIframes() {
+        slidesList().forEach((slide) => {
+          if (!(slide instanceof HTMLElement)) return;
+          const id = slide.getAttribute("data-tiktok-id");
+          const iframe = slide.querySelector(".t-tiktok-inline-iframe");
+          if (!id || !(iframe instanceof HTMLIFrameElement)) return;
+          if (iframe.getAttribute("src")) return;
+          iframe.src = tikTokPlayerUrl(id, false);
+        });
+      }
+
+      const schedulePreload = () => {
+        if (typeof requestIdleCallback !== "undefined") {
+          requestIdleCallback(
+            () => {
+              preloadTikTokPlayerIframes();
+            },
+            { timeout: 2800 },
+          );
+        } else {
+          setTimeout(preloadTikTokPlayerIframes, 600);
+        }
+      };
+      schedulePreload();
 
       function deactivateTiktokSlide(slide) {
         if (!(slide instanceof HTMLElement)) return;
@@ -239,31 +364,34 @@ const testimonials = [
           wrap.hidden = true;
           wrap.setAttribute("aria-hidden", "true");
         }
-        if (iframe instanceof HTMLIFrameElement) iframe.removeAttribute("src");
+        if (iframe instanceof HTMLIFrameElement) {
+          iframe.src = "about:blank";
+        }
       }
 
       function activateTiktokSlide(slide) {
         if (!(slide instanceof HTMLElement)) return;
         const id = slide.getAttribute("data-tiktok-id");
-        const externalUrl = slide.getAttribute("data-tiktok-url");
         const iframe = slide.querySelector(".t-tiktok-inline-iframe");
         const wrap = slide.querySelector(".t-slide-embed");
         if (!id || !(iframe instanceof HTMLIFrameElement) || !wrap) return;
         if (!(wrap instanceof HTMLElement)) return;
 
-        if (isIOS && externalUrl) {
-          window.open(externalUrl, "_blank", "noopener,noreferrer");
-          return;
-        }
-
         slidesList().forEach((s) => {
-          if (s !== slide) deactivateTiktokSlide(s);
+          if (
+            s !== slide &&
+            s instanceof HTMLElement &&
+            s.classList.contains("t-slide--playing")
+          ) {
+            deactivateTiktokSlide(s);
+          }
         });
 
         slide.classList.add("t-slide--playing");
         wrap.hidden = false;
         wrap.setAttribute("aria-hidden", "false");
-        iframe.src = tikTokPlayerUrl(id);
+        iframe.src = tikTokPlayerUrl(id, true);
+        wireTiktokSoundAfterUserPlay(iframe);
       }
 
       track.addEventListener("click", (e) => {
@@ -633,20 +761,38 @@ const testimonials = [
     overflow: hidden;
     aspect-ratio: 9 / 16;
     min-height: 260px;
-    background: #1a1a1a;
+    background: #f0f0f0;
   }
 
   .t-slide-poster {
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: #000;
+    background: #ececec;
+    overflow: hidden;
+  }
+
+  .t-slide-poster-img {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .t-slide-poster-img.t-slide-poster-img--ready {
+    opacity: 1;
   }
 
   .t-slide-activate {
     position: absolute;
     inset: 0;
-    z-index: 2;
+    z-index: 3;
     margin: 0;
     padding: 0;
     border: none;
@@ -710,24 +856,6 @@ const testimonials = [
     display: block;
   }
 
-  .t-slide-tiktok-link {
-    flex-shrink: 0;
-    display: block;
-    text-align: center;
-    padding: 8px 10px 10px;
-    font-family: var(--font-body, "Epilogue", sans-serif);
-    font-size: 12px;
-    font-weight: 600;
-    color: #ff530f;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    background: #0a0a0a;
-  }
-
-  .t-slide-tiktok-link:hover {
-    color: #ff7a45;
-  }
-
   .t-slide--playing .t-slide-poster {
     visibility: hidden;
     pointer-events: none;
@@ -737,6 +865,7 @@ const testimonials = [
     position: absolute;
     left: 50%;
     top: 50%;
+    z-index: 2;
     transform: translate(-50%, -50%);
     width: 56px;
     height: 56px;

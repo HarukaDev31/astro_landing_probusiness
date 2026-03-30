@@ -41,11 +41,10 @@
         <video
           class="hm-media-video"
           controls
-          autoplay
           loop
           playsinline
           webkit-playsinline
-          preload="metadata"
+          preload="auto"
           aria-label="Video: mercado y proveedores en China"
           width="1920"
           height="1080"
@@ -65,7 +64,24 @@
             </svg>
           </button>
         </div>
-    
+        <button
+          type="button"
+          class="hm-media-unmute"
+          data-hm-media-unmute
+          hidden
+          aria-label="Activar sonido del video"
+        >
+          <svg class="hm-media-unmute-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path
+              d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 010 7.07m2.83-9.9a9 9 0 010 12.73"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span class="hm-media-unmute-text">Activar sonido</span>
+        </button>
       </div>
     </div>
   </div>
@@ -74,77 +90,106 @@
 <script>
   document.querySelectorAll("[data-hm-media]").forEach((root) => {
     const preview = root.querySelector("[data-hm-media-preview]");
+    const playBtn = root.querySelector("[data-hm-media-play]");
+    const unmuteBtn = root.querySelector("[data-hm-media-unmute]");
     const video = root.querySelector(".hm-media-video");
     if (!(preview instanceof HTMLElement) || !(video instanceof HTMLVideoElement))
       return;
-    let hasBoundFirstInteraction = false;
+
+    /** Autoplay con sonido suele estar bloqueado; si el vídeo va mute, mostramos botón para activar audio con un clic. */
+    const syncUnmuteBtn = () => {
+      if (!(unmuteBtn instanceof HTMLElement)) return;
+      const show = !video.paused && video.muted && preview.hidden;
+      unmuteBtn.hidden = !show;
+    };
 
     const reveal = () => {
       preview.hidden = true;
       root.classList.add("hm-media--playing");
+      syncUnmuteBtn();
     };
 
     const showPreview = () => {
       preview.hidden = false;
       root.classList.remove("hm-media--playing");
+      syncUnmuteBtn();
     };
 
-    const bindFirstInteractionForSound = () => {
-      if (hasBoundFirstInteraction) return;
-      hasBoundFirstInteraction = true;
+    try {
+      video.playsInline = true;
+    } catch {
+      /* noop */
+    }
 
-      const activateSound = async () => {
-        video.muted = false;
-        video.defaultMuted = false;
-        video.volume = 1;
-        try {
-          await video.play();
-        } catch {
-          // Si el navegador sigue bloqueando, mantenemos reproducción actual.
-        }
-      };
-
-      const onceOptions = { once: true, passive: true };
-      window.addEventListener("pointerdown", () => {
-        void activateSound();
-      }, onceOptions);
-      window.addEventListener("keydown", () => {
-        void activateSound();
-      }, { once: true });
+    const playUnmuted = () => {
+      video.muted = false;
+      video.defaultMuted = false;
+      video.removeAttribute("muted");
+      video.volume = 1;
+      return video.play();
     };
 
-    const tryAutoplay = async () => {
-      try {
-        video.muted = false;
-        video.defaultMuted = false;
-        video.volume = 1;
-        await video.play();
-        reveal();
-      } catch {
-        // Fallback compatible con políticas de autoplay (Chrome/Safari/Firefox).
-        try {
-          video.muted = true;
-          video.defaultMuted = true;
-          await video.play();
-          reveal();
-          bindFirstInteractionForSound();
-        } catch {
-          showPreview();
-        }
-      }
+    /**
+     * 1) Con sonido. 2) Si el navegador bloquea, autoplay muteado (suele permitirse).
+     * Varios disparadores (microtask, canplay, timeout) por si `canplay` ya pasó antes del script.
+     */
+    const tryAutoplay = () => {
+      if (!video.paused) return;
+
+      const p = playUnmuted();
+      if (p === undefined) return;
+      p.then(() => reveal()).catch(() => {
+        video.muted = true;
+        video.defaultMuted = true;
+        const p2 = video.play();
+        if (p2 === undefined) return;
+        p2
+          .then(() => reveal())
+          .catch(() => showPreview());
+      });
     };
 
-    preview.addEventListener("click", async () => {
-      if (preview.hidden) return;
+    const scheduleAutoplay = () => {
+      queueMicrotask(() => tryAutoplay());
+      video.addEventListener("canplay", () => tryAutoplay(), { once: true });
+      window.setTimeout(() => {
+        if (video.paused) tryAutoplay();
+      }, 600);
+    };
+
+    const playOnUserGesture = () => {
       reveal();
-      try {
+      const p = playUnmuted();
+      if (p !== undefined) p.catch(() => showPreview());
+    };
+
+    if (playBtn instanceof HTMLElement) {
+      playBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        playOnUserGesture();
+      });
+    }
+
+    if (unmuteBtn instanceof HTMLElement) {
+      unmuteBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
         video.muted = false;
         video.defaultMuted = false;
+        video.removeAttribute("muted");
         video.volume = 1;
-        await video.play();
-      } catch {
-        showPreview();
-      }
+        const p = video.play();
+        if (p !== undefined) p.catch(() => {});
+        syncUnmuteBtn();
+      });
+    }
+
+    video.addEventListener("volumechange", syncUnmuteBtn);
+
+    preview.addEventListener("click", (e) => {
+      if (preview.hidden) return;
+      if (e.target instanceof Element && e.target.closest("[data-hm-media-play]"))
+        return;
+      playOnUserGesture();
     });
 
     video.addEventListener("play", () => {
@@ -155,7 +200,7 @@
       showPreview();
     });
 
-    void tryAutoplay();
+    scheduleAutoplay();
   });
 </script>
 
@@ -348,6 +393,64 @@
 
   .hm-media-preview[hidden] {
     display: none;
+  }
+
+  .hm-media-unmute {
+    position: absolute;
+    left: clamp(12px, 3vw, 20px);
+    bottom: clamp(12px, 3vw, 20px);
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    margin: 0;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    font-family: var(--font-body, 'Epilogue', sans-serif);
+    font-size: clamp(13px, 2vw, 15px);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition:
+      transform 0.2s ease,
+      background 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .hm-media-unmute[hidden] {
+    display: none;
+  }
+
+  .hm-media-unmute:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 84, 16, 0.92);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .hm-media-unmute:focus-visible {
+    outline: 2px solid #ff5410;
+    outline-offset: 3px;
+  }
+
+  .hm-media-unmute-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+  }
+
+  .hm-media-unmute-text {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .hm-media-unmute {
+      bottom: clamp(48px, 14vw, 64px);
+    }
   }
 
   .hm-media-play-btn {
