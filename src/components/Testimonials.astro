@@ -281,7 +281,7 @@ const testimonials = [
         return `https://www.tiktok.com/player/v1/${videoId}?${q.toString()}`;
       }
 
-      /** API embed TikTok: host → player (unMute). */
+      /** API embed TikTok: host → player (ver developers.tiktok.com/doc/embed-player). */
       function postToTiktokPlayer(iframe, type) {
         if (!(iframe instanceof HTMLIFrameElement) || !iframe.contentWindow) return;
         try {
@@ -294,20 +294,43 @@ const testimonials = [
         }
       }
 
+      function requestTiktokPlay(iframe) {
+        postToTiktokPlayer(iframe, "play");
+      }
+
       function requestTiktokUnmute(iframe) {
         postToTiktokPlayer(iframe, "unMute");
       }
 
-      /** Tras activar con clic (gesto de usuario), insistir en quitar mute por políticas del iframe. */
-      function wireTiktokSoundAfterUserPlay(iframe) {
+      /** Autoplay en iframe a menudo falla (AUTOPLAY_ERROR); hay que mandar `play` explícito al reproductor. */
+      function kickTiktokPlayback(iframe) {
+        requestTiktokPlay(iframe);
+        requestTiktokUnmute(iframe);
+      }
+
+      function scheduleTiktokPlaybackRetries(iframe) {
         if (!(iframe instanceof HTMLIFrameElement)) return;
-        const kick = () => {
-          requestTiktokUnmute(iframe);
-        };
-        iframe.addEventListener("load", kick, { once: true });
-        [0, 120, 400, 900, 1600].forEach((ms) => {
+        const kick = () => kickTiktokPlayback(iframe);
+        [0, 80, 200, 500, 1200, 2200].forEach((ms) => {
           window.setTimeout(kick, ms);
         });
+      }
+
+      /** Tras asignar `src` o reutilizar iframe precargado: play + unMute en load y reintentos. */
+      function wireTiktokPlaybackAfterActivate(iframe, waitForLoad) {
+        if (!(iframe instanceof HTMLIFrameElement)) return;
+        const kick = () => kickTiktokPlayback(iframe);
+        if (waitForLoad) iframe.addEventListener("load", kick, { once: true });
+        scheduleTiktokPlaybackRetries(iframe);
+      }
+
+      /** Solo el slide abierto por el usuario debe recibir play/unMute (evita precargas disparando todos los embeds). */
+      function isTiktokIframeInActiveSlide(iframe) {
+        const slide = iframe.closest("[data-t-slide]");
+        return (
+          slide instanceof HTMLElement &&
+          slide.classList.contains("t-slide--playing")
+        );
       }
 
       if (typeof window !== "undefined") {
@@ -323,7 +346,9 @@ const testimonials = [
               el instanceof HTMLIFrameElement &&
               el.contentWindow === event.source
             ) {
-              requestTiktokUnmute(el);
+              if (!isTiktokIframeInActiveSlide(el)) return;
+              if (d.type === "onPlayerReady") kickTiktokPlayback(el);
+              else requestTiktokUnmute(el);
             }
           });
         });
@@ -390,8 +415,20 @@ const testimonials = [
         slide.classList.add("t-slide--playing");
         wrap.hidden = false;
         wrap.setAttribute("aria-hidden", "false");
-        iframe.src = tikTokPlayerUrl(id, true);
-        wireTiktokSoundAfterUserPlay(iframe);
+
+        const src = iframe.src || "";
+        const alreadyHasPlayer =
+          src !== "" &&
+          src !== "about:blank" &&
+          src.includes(`/player/v1/${id}`);
+
+        if (alreadyHasPlayer) {
+          kickTiktokPlayback(iframe);
+          wireTiktokPlaybackAfterActivate(iframe, false);
+        } else {
+          iframe.src = tikTokPlayerUrl(id, true);
+          wireTiktokPlaybackAfterActivate(iframe, true);
+        }
       }
 
       track.addEventListener("click", (e) => {
