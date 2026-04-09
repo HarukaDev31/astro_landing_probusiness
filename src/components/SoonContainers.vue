@@ -17,13 +17,13 @@ watch(
   { deep: true },
 );
 
-/** `public/images/check_naranja.png` se sirve en la raíz del sitio */
-const checkFlagSrc = `${import.meta.env.BASE_URL}images/check_naranja.png`;
+const cdnRoot = (import.meta.env.PUBLIC_CDN_URL || 'https://cdn.probusiness.pe/landingconsolidado').replace(/\/$/, '');
+const checkFlagSrc = `${cdnRoot}/images/check_naranja.webp`;
 </script>
 
 <template>
   <div class="soon-container" style="position: relative;">
-    <!-- bandera / check (public/images/check_naranja.png) -->
+    <!-- bandera / check (public/images/check_naranja.webp) -->
     <img
       :src="checkFlagSrc"
       alt=""
